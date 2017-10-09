@@ -1,5 +1,8 @@
-﻿using SpellChecker.Contracts;
+﻿
+using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace SpellChecker.Console
 {
@@ -32,20 +35,42 @@ namespace SpellChecker.Console
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            System.Console.Write("Please enter a sentance: ");
-            var sentance = System.Console.ReadLine();
+            System.Console.Write("Please enter a sentence: ");
 
-            // first break the sentance up into words, 
-            // then iterate through the list of words using the spell checker
-            // capturing distinct words that are misspelled
+            var sentence = System.Console.ReadLine() ?? ""; // Just in case a null comes out make it an empty string
 
-            // use this spellChecker to evaluate the words
-            var spellChecker = new Core.SpellChecker(new ISpellChecker[]
+            if (!string.IsNullOrWhiteSpace(sentence))
             {
-                new MnemonicSpellCheckerIBeforeE(),
-                new DictionaryDotComSpellChecker(),
-            });
+                // first break the sentance up into words, 
+                var words = Regex.Split(sentence, @"[^\w0-9-]+")
+                    .Where(word => !string.IsNullOrWhiteSpace(word))
+                    .ToList();
+
+                // use this spellChecker to evaluate the words
+                var spellChecker = new Core.SpellChecker(new ISpellChecker[]
+                {
+                        new MnemonicSpellCheckerIBeforeE(),
+                        new DictionaryDotComSpellChecker(),
+                });
+
+
+                // then iterate through the list of words using the spell checker
+                // capturing distinct words that are misspelled
+                var misspelled = words.Where(word => !spellChecker.Check(word))
+                    .Distinct()
+                    .ToList();
+
+                misspelled.ForEach(System.Console.WriteLine);
+            }
+            else
+            {
+                System.Console.WriteLine("No sentence entered.");
+            }
+
+            System.Console.Write("Press enter to exit.");
+            System.Console.ReadLine();
         }
+
 
     }
 

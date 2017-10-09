@@ -1,10 +1,7 @@
-﻿using System;
-
+﻿
 using NUnit.Framework;
-
-using SpellChecker.Core;
-
 using SpellChecker.Contracts;
+using SpellChecker.Core;
 
 namespace SpellChecker.Tests
 {
@@ -24,13 +21,17 @@ namespace SpellChecker.Tests
         [Test]
         public void Check_That_FileAndServe_Is_Misspelled()
         {
-            throw new NotImplementedException();
+            var result = spellChecker.Check("FileAndServe");
+
+            Assert.IsFalse(result, "SpellChecker thinks FileAndServe is spelled correctly.");
         }
 
         [Test]
         public void Check_That_South_Is_Not_Misspelled()
         {
-            throw new NotImplementedException();
+            var result = spellChecker.Check("South");
+
+            Assert.IsTrue(result, "SpellChecker thinks South is spelled incorrectly.");
         }
 
     }
