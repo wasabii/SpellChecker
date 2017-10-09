@@ -7,7 +7,7 @@ namespace SpellChecker.Console
     /// <summary>
     /// The following are the "requirements" for this project:
     /// 
-    /// 1. Implent Main() below so that a user can input a sentence.  Each word in that
+    /// 1. Implement Main() below so that a user can input a sentence.  Each word in that
     ///    sentence will be evaluated with the SpellChecker, which returns true for a word
     ///    that is spelled correctly and false for a word that is spelled incorrectly.  Display
     ///    out each *distinct* word that is misspelled.  That is, if a user uses the same misspelled
