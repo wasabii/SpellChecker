@@ -32,7 +32,7 @@ namespace SpellChecker.Console
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            System.Console.Write("Please enter a sentance: ");
+            System.Console.Write("Please enter a sentence: ");
             var sentance = System.Console.ReadLine();
 
             // first break the sentance up into words, 
