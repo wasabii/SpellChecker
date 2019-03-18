@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
@@ -24,7 +25,13 @@ namespace SpellChecker.Core
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
         public bool Check(string word)
         {
-            throw new NotImplementedException();
+            if (word.Contains("ie") || word.Contains("ei"))
+            {
+                Regex regex = new Regex(@"\b\w*(cei|\bie|(?!c)\w(?=ie))\w*\b");
+                Match match = regex.Match(word);
+                return match.Success;
+            }
+            return true;           
         }
 
     }

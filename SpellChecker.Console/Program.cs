@@ -1,5 +1,8 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 
 namespace SpellChecker.Console
 {
@@ -32,6 +35,13 @@ namespace SpellChecker.Console
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
+            //Force to use TLS1.2 for network communication if possible          
+            if (ServicePointManager.SecurityProtocol.HasFlag(SecurityProtocolType.Tls12) == false)
+            {
+                ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol | SecurityProtocolType.Tls12;
+            }
+
+
             System.Console.Write("Please enter a sentance: ");
             var sentance = System.Console.ReadLine();
 
@@ -45,6 +55,14 @@ namespace SpellChecker.Console
                 new MnemonicSpellCheckerIBeforeE(),
                 new DictionaryDotComSpellChecker(),
             });
+
+         
+            IEnumerable<string> misspelledWords = sentance.Split(' ','.').Where(x => !spellChecker.Check(x)).Distinct();
+
+
+            System.Console.Write($"Misspelled words: {misspelledWords.Aggregate((i, j) => i + " " + j)}");
+            System.Console.ReadKey();
+
         }
 
     }
