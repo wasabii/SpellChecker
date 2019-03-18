@@ -1,6 +1,6 @@
 ﻿using System;
 
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using SpellChecker.Contracts;
 using SpellChecker.Core;
@@ -8,25 +8,25 @@ using SpellChecker.Core;
 namespace SpellChecker.Tests
 {
 
-    [TestFixture]
+    [TestClass]
     public class MnemonicSpellCheckerIBeforeETests
     {
 
         ISpellChecker spellChecker;
 
-        [OneTimeSetUp]
+        [TestInitialize]
         public void TestFixtureSetUp()
         {
             spellChecker = new MnemonicSpellCheckerIBeforeE();
         }
 
-        [Test]
+        [TestMethod]
         public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly()
         {
             throw new NotImplementedException();
         }
 
-        [Test]
+        [TestMethod]
         public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly()
         {
             throw new NotImplementedException();

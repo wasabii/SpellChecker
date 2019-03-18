@@ -1,4 +1,5 @@
 ﻿using System;
+
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core

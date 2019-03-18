@@ -1,33 +1,32 @@
 ﻿using System;
 
-using NUnit.Framework;
-
-using SpellChecker.Core;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using SpellChecker.Contracts;
+using SpellChecker.Core;
 
 namespace SpellChecker.Tests
 {
 
-    [TestFixture]
+    [TestClass]
     public class DictionaryDotComSpellCheckerTests
     {
 
         ISpellChecker spellChecker;
 
-        [OneTimeSetUp]
+        [TestInitialize]
         public void TestFixureSetUp()
         {
             spellChecker = new DictionaryDotComSpellChecker();
         }
 
-        [Test]
+        [TestMethod]
         public void Check_That_FileAndServe_Is_Misspelled()
         {
             throw new NotImplementedException();
         }
 
-        [Test]
+        [TestMethod]
         public void Check_That_South_Is_Not_Misspelled()
         {
             throw new NotImplementedException();
