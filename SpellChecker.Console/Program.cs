@@ -1,5 +1,6 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Collections.Generic;
 
 namespace SpellChecker.Console
 {
@@ -30,10 +31,23 @@ namespace SpellChecker.Console
         /// and it will display a distinct list of incorrectly spelled words
         /// </summary>
         /// <param name="args"></param>
+        /// 
+
+        public static string stripPunctuation(string word)
+        {
+            string rslt = "";
+            for (int i=0; i < word.Length; i++)
+            {
+                char aChar = word[i];
+                if (!char.IsPunctuation(aChar))
+                    rslt += aChar;
+            }
+            return rslt;
+        }
         public static void Main(string[] args)
         {
             System.Console.Write("Please enter a sentance: ");
-            var sentance = System.Console.ReadLine();
+            var sentence = System.Console.ReadLine();
 
             // first break the sentance up into words, 
             // then iterate through the list of words using the spell checker
@@ -45,6 +59,26 @@ namespace SpellChecker.Console
                 new MnemonicSpellCheckerIBeforeE(),
                 new DictionaryDotComSpellChecker(),
             });
+
+            List<string> misspells = new List<string>();
+            string[] words = sentence.Split(' ');
+            for (int i=0; i < words.Length; i++)
+            {
+                string word = words[i];
+                word = stripPunctuation(word);
+                if (!spellChecker.Check(word))
+                {
+                    if (misspells.IndexOf(word) < 0)
+                        misspells.Add(word);
+                }
+
+                
+            }
+
+            System.Console.WriteLine("Misspelled words:");
+            foreach (string mispelledWord in misspells)
+                System.Console.WriteLine(mispelledWord);
+            System.Console.ReadLine();
         }
 
     }
