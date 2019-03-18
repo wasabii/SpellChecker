@@ -8,11 +8,11 @@
     {
 
         /// <summary>
-        /// All SpellCheckers will need to implement this methed, which returns true
-        /// for words that are spelled correctly and false otherwise
+        /// All SpellCheckers will need to implement this methed, which returns <c>true</c> for words that are spelled
+        /// correctly and <c>false</c> otherwise.
         /// </summary>
         /// <param name="word">The word that needs to be checked</param>
-        /// <returns>true, if the word is spelled correctly, false otherwise</returns>
+        /// <returns><c>true</c>, if the word is spelled correctly, <c>false</c> otherwise</returns>
         bool Check(string word);
     }
 

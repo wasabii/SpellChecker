@@ -14,10 +14,10 @@ namespace SpellChecker.Console
     ///    word more than once, simply output that word one time.
     ///    
     ///    Example:
-    ///    Please enter a sentance: Salley sells seashellss by the seashore.  The shells Salley sells are surely by the sea.
+    ///    Please enter a sentence: Salley sells seashellss by the seashore.  The shells Salley sells are surely by the sea.
     ///    Misspelled words: Salley seashellss
     ///    
-    /// 2. The concrete implementation of SpellChecker depends on two other implementations of ISpellChecker, DictionaryDotComSpellChecker
+    /// 2. The concrete implementation of SpellChecker depends on two other implementations of <see cref="ISpellChecker"/>, <see cref="DictionaryDotComSpellChecker"/>
     ///    and MnemonicSpellCheckerIBeforeE.  You will need to implement those classes.  See those classes for details.
     ///    
     /// 3. There are covering unit tests in the SpellChecker.Tests library that should be implemented as well.
@@ -26,6 +26,7 @@ namespace SpellChecker.Console
     /// 
     /// 1. Convert to async.
     /// 2. Implement Dependency Injection (framework of your choice).
+    /// 3. Dynamic loading of checking instances.
     /// 
     /// </summary>
     public static class Program
@@ -38,10 +39,10 @@ namespace SpellChecker.Console
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            System.Console.Write("Please enter a sentance: ");
-            var sentance = System.Console.ReadLine();
+            System.Console.Write("Please enter a sentence: ");
+            var sentence = System.Console.ReadLine();
 
-            // first break the sentance up into words, 
+            // first break the sentence up into words, 
             // then iterate through the list of words using the spell checker
             // capturing distinct words that are misspelled
 
