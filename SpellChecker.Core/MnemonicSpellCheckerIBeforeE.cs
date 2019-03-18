@@ -24,7 +24,22 @@ namespace SpellChecker.Core
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
         public bool Check(string word)
         {
-            throw new NotImplementedException();
+            word = word.ToLower();
+            for (int i=0; i < word.Length; i++)
+            {
+                char letter = word[i];
+                if (letter == 'c')
+                {
+                    if (i+2 < word.Length)
+                    {
+                        if ((word[i + 1] == 'i') && (word[i + 2] == 'e'))
+                            return false;
+                    }
+                }
+
+            }
+
+            return true;
         }
 
     }
