@@ -23,13 +23,15 @@ namespace SpellChecker.Tests
         [Test]
         public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly()
         {
-            throw new NotImplementedException();
+            bool rslt = spellChecker.Check("receive");
+            Assert.IsTrue(rslt);
         }
 
         [Test]
         public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly()
         {
-            throw new NotImplementedException();
+            bool rslt = spellChecker.Check("recieve");
+            Assert.IsFalse(rslt);
         }
 
     }

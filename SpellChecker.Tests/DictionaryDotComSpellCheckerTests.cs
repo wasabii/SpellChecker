@@ -24,13 +24,16 @@ namespace SpellChecker.Tests
         [Test]
         public void Check_That_FileAndServe_Is_Misspelled()
         {
-            throw new NotImplementedException();
+            bool rslt = spellChecker.Check("FileAndServe");
+            Assert.IsFalse(rslt);
         }
 
         [Test]
         public void Check_That_South_Is_Not_Misspelled()
         {
-            throw new NotImplementedException();
+            bool rslt = spellChecker.Check("South");
+            Assert.IsTrue(rslt);
+
         }
 
     }
