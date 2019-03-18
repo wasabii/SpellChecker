@@ -21,6 +21,12 @@ namespace SpellChecker.Console
     ///    and MnemonicSpellCheckerIBeforeE.  You will need to implement those classes.  See those classes for details.
     ///    
     /// 3. There are covering unit tests in the SpellChecker.Tests library that should be implemented as well.
+    /// 
+    /// For extra credit, consider the following modifications:
+    /// 
+    /// 1. Convert to async.
+    /// 2. Implement Dependency Injection (framework of your choice).
+    /// 
     /// </summary>
     public static class Program
     {
