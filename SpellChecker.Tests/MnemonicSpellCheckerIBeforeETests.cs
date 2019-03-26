@@ -1,37 +1,36 @@
-﻿using System;
+﻿using System.Threading.Tasks;
+
+using SpellChecker.Contracts;
+using SpellChecker.Core.Checker;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using SpellChecker.Contracts;
-using SpellChecker.Core;
-
 namespace SpellChecker.Tests
 {
-
     [TestClass]
     public class MnemonicSpellCheckerIBeforeETests
     {
 
-        ISpellChecker spellChecker;
+        ISpellChecker _spellChecker;
 
         [TestInitialize]
         public void TestFixtureSetUp()
         {
-            spellChecker = new MnemonicSpellCheckerIBeforeE();
+            _spellChecker = new MnemonicSpellCheckerIBeforeE();
         }
 
         [TestMethod]
-        public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly()
+        public async Task Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly()
         {
-            throw new NotImplementedException();
+            var result = await _spellChecker.CheckAsync("Conceive");
+            Assert.IsTrue(result.IsCorrect);
         }
 
         [TestMethod]
-        public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly()
+        public async Task Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly()
         {
-            throw new NotImplementedException();
+            var result = await _spellChecker.CheckAsync("protein");
+            Assert.IsFalse(result.IsCorrect);
         }
-
     }
-
 }
