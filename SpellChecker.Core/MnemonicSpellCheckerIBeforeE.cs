@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Text.RegularExpressions;
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
@@ -25,7 +25,8 @@ namespace SpellChecker.Core
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
         public bool Check(string word)
         {
-            throw new NotImplementedException();
+            var regex = new Regex(@"^\S*[^Cc]ei\S*$");
+            return !(word.ToLower().Contains("cie") ^ regex.IsMatch(word));
         }
 
     }
