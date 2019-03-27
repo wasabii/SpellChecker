@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 using SpellChecker.Contracts;
 
@@ -23,9 +24,37 @@ namespace SpellChecker.Core
         /// </summary>
         /// <param name="word">The word to be checked</param>
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
-        public bool Check(string word)
+        public async Task<bool> Check(string word)
         {
-            throw new NotImplementedException();
+            int ie = word.IndexOf("ie");
+            int ei = word.IndexOf("ei");
+            // LSotelo: Find the ie/ei sequences (if applicable) and apply the desired spelling rules.
+            if (ie != -1)
+            {
+                if (word.Substring(ie-1,1) != "c")
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (ei != -1){
+                if (word.Substring(ei-1,1) != "c")
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                // LSotelo: Return true for all other words not containing the ie or ei sequence of letters.
+                return true;
+            }
         }
 
     }
