@@ -1,6 +1,12 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
+[assembly: InternalsVisibleTo("SpellChecker.Tests")]
 namespace SpellChecker.Console
 {
 
@@ -37,14 +43,12 @@ namespace SpellChecker.Console
         /// and it will display a distinct list of incorrectly spelled words
         /// </summary>
         /// <param name="args"></param>
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             System.Console.Write("Please enter a sentence: ");
             var sentence = System.Console.ReadLine();
-
-            // first break the sentence up into words, 
-            // then iterate through the list of words using the spell checker
-            // capturing distinct words that are misspelled
+            
+            var words = ExtractUniqueWords(sentence);
 
             // use this spellChecker to evaluate the words
             var spellChecker = new Core.SpellChecker(new ISpellChecker[]
@@ -52,6 +56,39 @@ namespace SpellChecker.Console
                 new MnemonicSpellCheckerIBeforeE(),
                 new DictionaryDotComSpellChecker(),
             });
+
+            var misspelledWords = new List<string>();
+            foreach(var word in words)
+            {
+                var isCorrect = await spellChecker.Check(word);
+                if (!isCorrect)
+                {
+                    misspelledWords.Add(word);
+                }
+            }
+
+            System.Console.Write($"Misspelled words: {string.Join(" ", misspelledWords)}");
+            System.Console.ReadKey();
+        }
+
+        /// <summary>
+        /// Normalizes a user inputted sentence, transforms to lowercase and only returns unique strings 
+        /// </summary>
+        /// <param name="sentence"></param>
+        /// <returns></returns>
+        internal static IList<string> ExtractUniqueWords(string sentence)
+        {
+            sentence = Regex.Replace(sentence, @"[^\w\s]", " ");
+            var wordsLowercase = sentence.Split(' ').Select(w => w.ToLower());
+            var words = new List<string>();
+            foreach (var word in wordsLowercase)
+            {
+                if (!words.Contains(word))
+                {
+                    words.Add(word);
+                }
+            }
+            return words;
         }
 
     }
