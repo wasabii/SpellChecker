@@ -55,7 +55,7 @@ namespace SpellChecker.Console
                 new DictionaryDotComSpellChecker(),
             });
 
-            var words = sentence?.Split(' ').ToList();
+            var words = sentence?.Split(' ').ToList().Distinct();
             foreach (var word in words)
             {
                 if (!spellChecker.Check(word))
