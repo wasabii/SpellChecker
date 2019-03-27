@@ -29,11 +29,11 @@ namespace SpellChecker.Core
             word = word.ToLower();
             var index = word.IndexOf("ie");
 
-            if (index > 0 && word.Substring(index -1, 1) != "c")
+            if (index > 0)
             {
-                return true;
+                return word.Substring(index - 1, 1) != "c";
             }
-            return false;
+            return true;
         }
 
     }

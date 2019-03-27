@@ -46,6 +46,19 @@ namespace SpellChecker.Tests
             Assert.IsFalse(isCorrect);
         }
 
+        [TestMethod]
+        public async Task Check_Word_That_Does_Not_Contain_IE_Spelled_Correctly()
+        {
+            //Arrange
+            var wordToCheck = "this";
+
+            //Act
+            var isCorrect = await spellChecker.Check(wordToCheck);
+
+            //Assert
+            Assert.IsTrue(isCorrect);
+        }
+
     }
 
 }

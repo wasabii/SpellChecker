@@ -1,5 +1,6 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -35,7 +36,7 @@ namespace SpellChecker.Console
     /// 3. Dynamic loading of checking instances.
     /// 
     /// </summary>
-    public static class Program
+    public class Program
     {
 
         /// <summary>
@@ -67,7 +68,8 @@ namespace SpellChecker.Console
                 }
             }
 
-            System.Console.Write($"Misspelled words: {string.Join(" ", misspelledWords)}");
+            System.Console.WriteLine($"Misspelled words: {string.Join(" ", misspelledWords)}");
+            System.Console.WriteLine("(click any key to close)");
             System.Console.ReadKey();
         }
 
