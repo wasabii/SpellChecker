@@ -81,12 +81,12 @@ namespace SpellChecker.Console
         /// <returns></returns>
         internal static IList<string> ExtractUniqueWords(string sentence)
         {
-            sentence = Regex.Replace(sentence, @"[^\w\s]", " ");
+            sentence = Regex.Replace(sentence, @"[^\w\s]", "");
             var wordsLowercase = sentence.Split(' ').Select(w => w.ToLower());
             var words = new List<string>();
             foreach (var word in wordsLowercase)
             {
-                if (!words.Contains(word))
+                if (!words.Contains(word) && !string.IsNullOrEmpty(word))
                 {
                     words.Add(word);
                 }
