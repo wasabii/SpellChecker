@@ -68,7 +68,8 @@ namespace SpellChecker.Console
                 }
             }
 
-            System.Console.WriteLine($"Misspelled words: {string.Join(" ", misspelledWords)}");
+            var misspelledMessage = misspelledWords.Count > 0 ? string.Join(" ", misspelledWords) : "(no misspelled words)";
+            System.Console.WriteLine($"Misspelled words: {misspelledMessage}");
             System.Console.WriteLine("(click any key to close)");
             System.Console.ReadKey();
         }
