@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Net.Http;
+using System.Threading.Tasks;
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
@@ -19,11 +20,22 @@ namespace SpellChecker.Core
         ISpellChecker
     {
 
-        public bool Check(string word)
+        public async Task<bool> Check(string word)
         {
-            throw new NotImplementedException();
+            var isValid = false;
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var response = await client.GetAsync($"http://dictionary.reference.com/browse/{word}");
+                    isValid = response.IsSuccessStatusCode;
+                }
+                catch
+                {
+                    Console.WriteLine("Error while connecting to the dictionary.com endpoint.");
+                }
+            }
+            return isValid;
         }
-
     }
-
 }

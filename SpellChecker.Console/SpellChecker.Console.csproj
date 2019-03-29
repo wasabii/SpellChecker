@@ -12,4 +12,10 @@
     <ProjectReference Include="..\SpellChecker.Core\SpellChecker.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Program.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+
 </Project>

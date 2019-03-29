@@ -1,5 +1,8 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpellChecker.Console
 {
@@ -37,21 +40,52 @@ namespace SpellChecker.Console
         /// and it will display a distinct list of incorrectly spelled words
         /// </summary>
         /// <param name="args"></param>
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            System.Console.Write("Please enter a sentence: ");
-            var sentence = System.Console.ReadLine();
-
-            // first break the sentence up into words, 
-            // then iterate through the list of words using the spell checker
-            // capturing distinct words that are misspelled
-
-            // use this spellChecker to evaluate the words
-            var spellChecker = new Core.SpellChecker(new ISpellChecker[]
+            var sentence = "";
+            while (sentence != ":q")
             {
+                System.Console.WriteLine("Please enter a sentence: ");
+                sentence = System.Console.ReadLine();
+
+                if(string.IsNullOrWhiteSpace(sentence))
+                {
+                    System.Console.WriteLine("Umm I need a sentence...");
+                    continue;
+                }
+
+                // first break the sentence up into words, 
+                // then iterate through the list of words using the spell checker
+                // capturing distinct words that are misspelled
+                var distinctWords = sentence.Split(' ').ToArray().Where(w => !string.IsNullOrWhiteSpace(w)).Distinct();
+                
+                // use this spellChecker to evaluate the words
+                var spellChecker = new Core.SpellChecker(new ISpellChecker[]
+                {
                 new MnemonicSpellCheckerIBeforeE(),
                 new DictionaryDotComSpellChecker(),
-            });
+                });
+
+                var mispelledWords = new List<string>();
+                foreach (var word in distinctWords)
+                {
+                    if (await spellChecker.Check(word) == false)
+                        mispelledWords.Add(word);
+                }
+
+                if(mispelledWords.Count > 0)
+                {
+                    System.Console.WriteLine("For shame! Mispelled words: ");
+                    foreach (var word in mispelledWords)
+                    {
+                        System.Console.WriteLine(word);
+                    }
+                    
+                }
+                else
+                    System.Console.WriteLine("No mispelled words! I'm impressed.");
+
+            }
         }
 
     }
