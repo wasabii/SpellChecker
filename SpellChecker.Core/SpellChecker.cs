@@ -1,6 +1,4 @@
-﻿using System;
-
-using SpellChecker.Contracts;
+﻿using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
 {
@@ -22,7 +20,7 @@ namespace SpellChecker.Core
         /// <param name="spellCheckers"></param>
         public SpellChecker(ISpellChecker[] spellCheckers)
         {
-
+            this.spellCheckers = spellCheckers;
         }
 
         /// <summary>
@@ -33,7 +31,25 @@ namespace SpellChecker.Core
         /// <returns>True if all spell checkers agree that a word is spelled correctly, false otherwise</returns>
         public bool Check(string word)
         {
-            throw new NotImplementedException();
+            bool result = true;
+            var MnemonicSpellCheckerIBeforeE = (MnemonicSpellCheckerIBeforeE)spellCheckers[0];
+            var DictionaryDotComSpellChecker = (DictionaryDotComSpellChecker)spellCheckers[1];
+
+            // MnemonicSpellCheckerIBeforeE
+            if (!MnemonicSpellCheckerIBeforeE.Check(word))
+            {
+                result = false;
+                return result;
+            }
+
+            // DictionaryDotComSpellChecker
+            if (!DictionaryDotComSpellChecker.Check(word))
+            {
+                result = false;
+                return result;
+            }
+
+            return result;
         }
 
     }

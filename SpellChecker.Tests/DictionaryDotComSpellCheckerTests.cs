@@ -23,13 +23,13 @@ namespace SpellChecker.Tests
         [TestMethod]
         public void Check_That_FileAndServe_Is_Misspelled()
         {
-            throw new NotImplementedException();
+            Assert.IsFalse(spellChecker.Check("accordian"));
         }
 
         [TestMethod]
         public void Check_That_South_Is_Not_Misspelled()
         {
-            throw new NotImplementedException();
+            Assert.IsTrue(spellChecker.Check("restaurant"));
         }
 
     }

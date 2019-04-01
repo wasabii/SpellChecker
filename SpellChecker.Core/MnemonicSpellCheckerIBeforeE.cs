@@ -1,6 +1,7 @@
 ﻿using System;
-
+using System.Collections.Generic;
 using SpellChecker.Contracts;
+using System.Linq;
 
 namespace SpellChecker.Core
 {
@@ -25,7 +26,44 @@ namespace SpellChecker.Core
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
         public bool Check(string word)
         {
-            throw new NotImplementedException();
+            // If I is before E preceding the letter C, the word is misspelled
+            if (word.Contains("cie"))
+            {
+                return false;
+            }
+
+            // Only evaluate if the word contains an I and an E
+            if (word.Contains("i") && word.Contains("e"))
+            {
+                // Split the word into characters
+                var characters = new List<char>();
+
+                foreach (char character in word)
+                {
+                    characters.Add(character);
+                }
+
+                // Find the index of i, e, and c
+                int intLocOfI = characters.IndexOf('i');
+                int intLocOfE = characters.IndexOf('e', intLocOfI);
+                int intLocOfC = characters.IndexOf('c');
+
+                if (intLocOfI < intLocOfE)
+                {
+                    return true;
+                }
+                else if (word.Contains("cei"))
+                {
+                    return true;
+                }
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return true;
+            }
         }
 
     }

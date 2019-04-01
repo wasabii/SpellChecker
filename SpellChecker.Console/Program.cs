@@ -1,5 +1,8 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace SpellChecker.Console
 {
@@ -42,16 +45,40 @@ namespace SpellChecker.Console
             System.Console.Write("Please enter a sentence: ");
             var sentence = System.Console.ReadLine();
 
-            // first break the sentence up into words, 
-            // then iterate through the list of words using the spell checker
-            // capturing distinct words that are misspelled
-
             // use this spellChecker to evaluate the words
             var spellChecker = new Core.SpellChecker(new ISpellChecker[]
             {
                 new MnemonicSpellCheckerIBeforeE(),
                 new DictionaryDotComSpellChecker(),
             });
+
+            // Remove all non alphanumeric characters from the sentence
+            sentence = Regex.Replace(sentence, "[^a-zA-Z0-9 -]", "");
+
+            // first break the sentence up into words, 
+            string[] words = sentence.Split(" ");
+            var misspelledWords = new List<string>();
+
+            // then iterate through the list of words using the spell checker
+            foreach (string word in words)
+            {
+                if (!spellChecker.Check(word))
+                {
+                    misspelledWords.Add(word);
+                }
+            }
+
+            // capturing distinct words that are misspelled
+            if (misspelledWords.Count() > 0)
+            {
+                System.Console.Write("Misspelled words: ");
+                System.Console.WriteLine(string.Join(", ", misspelledWords.Distinct().ToArray()));
+            } else
+            {
+                System.Console.WriteLine("No misspelled words.");
+            }
+
+            System.Console.ReadLine();
         }
 
     }
