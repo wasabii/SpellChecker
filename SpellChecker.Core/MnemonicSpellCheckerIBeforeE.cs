@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
@@ -23,9 +24,39 @@ namespace SpellChecker.Core
         /// </summary>
         /// <param name="word">The word to be checked</param>
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
-        public bool Check(string word)
+        public async Task<bool> Check(string word)
         {
-            throw new NotImplementedException();
+            return await Task.Factory.StartNew(() =>
+            {
+                var wordContainsie = word.Contains("ie");
+                var wordContainsEi = word.Contains("ei");
+
+                // other possibilities considered.
+                var rxContainsIe = Regex.IsMatch(word, "\\w[i][e]");
+                var rxContainsEI = Regex.IsMatch(word, "c[e][i]");
+                //--- 
+
+                var wordArray = word.ToLowerInvariant().ToCharArray();
+                var ieposition = word.IndexOf("ie");
+                var eiposition = word.IndexOf("ei");
+                if (ieposition > 0)
+                {
+                    // i before e except after c
+                    if (wordArray[ieposition - 1] == 'c')
+                        return false;
+                    else
+                        return true;
+                }
+                else if (eiposition > 0)
+                {
+                    // i before e except after c
+                    if (wordArray[eiposition - 1] == 'c')
+                        return true;
+                    else
+                        return false;
+                }
+                return true;
+            });
         }
 
     }

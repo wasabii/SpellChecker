@@ -1,6 +1,6 @@
-﻿using System;
-
-using SpellChecker.Contracts;
+﻿using SpellChecker.Contracts;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace SpellChecker.Core
 {
@@ -19,9 +19,20 @@ namespace SpellChecker.Core
         ISpellChecker
     {
 
-        public bool Check(string word)
+        public async Task<bool> Check(string word)
         {
-            throw new NotImplementedException();
+            return await Task.Factory.StartNew(() =>
+            {
+
+                var client = new HttpClient();
+                var result = client.GetAsync($"http://dictionary.reference.com/browse/{word}");
+                var newresult = result.GetAwaiter().GetResult();
+                var resultingString = newresult.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                if (newresult.IsSuccessStatusCode && !string.IsNullOrWhiteSpace(resultingString))
+                    return true;
+                else
+                    return false;
+            });
         }
 
     }

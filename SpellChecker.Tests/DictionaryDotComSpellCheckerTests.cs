@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using SpellChecker.Contracts;
@@ -23,13 +23,29 @@ namespace SpellChecker.Tests
         [TestMethod]
         public void Check_That_FileAndServe_Is_Misspelled()
         {
-            throw new NotImplementedException();
+            var result = spellChecker.Check("File And Serv ").GetAwaiter().GetResult();
+            Assert.IsTrue(!result);
+        }
+
+        [TestMethod]
+        public async Task Check_That_FileAndServe_Is_Misspelled_Aync()
+        {
+            var result = await spellChecker.Check("File And Serv ");
+            Assert.IsTrue(!result);
         }
 
         [TestMethod]
         public void Check_That_South_Is_Not_Misspelled()
         {
-            throw new NotImplementedException();
+            var result = spellChecker.Check("South").GetAwaiter().GetResult();
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public async Task Check_That_South_Is_Not_Misspelled_Async()
+        {
+            var result = await spellChecker.Check("South");
+            Assert.IsTrue(result);
         }
 
     }

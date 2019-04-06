@@ -1,5 +1,8 @@
-﻿using SpellChecker.Contracts;
+﻿using Ninject;
+using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SpellChecker.Console
 {
@@ -39,19 +42,51 @@ namespace SpellChecker.Console
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
+            IKernel kernel = new StandardKernel(new SpellCheckerModule());
+
+            var dictspellChecker = kernel.Get<ISpellChecker>("Dictionary");
+            var iespellchecker = kernel.Get<ISpellChecker>("IBeforeE");
+
+            var incorrectwords = new List<string>();
+
             System.Console.Write("Please enter a sentence: ");
             var sentence = System.Console.ReadLine();
 
+            var words = sentence.Split(new char[] { ' ' });
             // first break the sentence up into words, 
-            // then iterate through the list of words using the spell checker
-            // capturing distinct words that are misspelled
 
-            // use this spellChecker to evaluate the words
-            var spellChecker = new Core.SpellChecker(new ISpellChecker[]
+            foreach (var word in words)
             {
-                new MnemonicSpellCheckerIBeforeE(),
-                new DictionaryDotComSpellChecker(),
-            });
+                // use this spellChecker to evaluate the words
+                var spellChecker = new Core.SpellChecker(new ISpellChecker[]
+                {
+                    iespellchecker,
+                    dictspellChecker,
+                });
+                var boolresult = spellChecker.Check(word);
+
+
+                // then iterate through the list of words using the spell checker
+                if (!boolresult.Result)
+                {
+                    // capturing distinct words that are misspelled
+                    incorrectwords.Add(word);
+                }
+            }
+
+            if (incorrectwords.Any())
+            {
+                System.Console.Write("Misspelled words: ");
+                foreach (var ic in incorrectwords.Distinct())
+                {
+                    System.Console.Write($"{ic} ");
+                }
+                System.Console.WriteLine();
+            }
+
+            System.Console.WriteLine();
+            System.Console.WriteLine("Done Press Enter Key to continue");
+            System.Console.ReadLine();
         }
 
     }
