@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using SpellChecker.Contracts;
 
@@ -20,22 +21,19 @@ namespace SpellChecker.Core
         ISpellChecker
     {
 
-        public bool Check(string word)
+        public async Task<bool> Check(string word)
         {
-            using (var client = new WebClient())
+            try
             {
-                try
-                {
-                    var request = WebRequest.Create(string.Format("http://dictionary.reference.com/browse/{0}", word));
+                var request = WebRequest.Create(string.Format("http://dictionary.reference.com/browse/{0}", word));
 
-                    request.GetResponse();
-                }
-                catch (WebException)
-                {
-                    return false;
-                }
-
+                await request.GetResponseAsync();
             }
+            catch (WebException)
+            {
+                return false;
+            }
+
             return true;
         }
 

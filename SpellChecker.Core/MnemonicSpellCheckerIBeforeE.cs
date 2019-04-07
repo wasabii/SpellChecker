@@ -1,4 +1,4 @@
-﻿
+﻿using System.Threading.Tasks;
 using SpellChecker.Contracts;
 using System.Text.RegularExpressions;
 
@@ -23,7 +23,7 @@ namespace SpellChecker.Core
         /// </summary>
         /// <param name="word">The word to be checked</param>
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
-        public bool Check(string word)
+        public async Task<bool> Check(string word)
         {
             var pattern = new Regex(@"\b\w*(cie|(?!c)\w(?=ei))\w*\b");
             return !pattern.IsMatch(word);

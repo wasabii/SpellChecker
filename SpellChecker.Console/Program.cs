@@ -59,7 +59,7 @@ namespace SpellChecker.Console
 
             foreach(var word in sentence.Split(' '))
             {
-                if (!spellChecker.Check(word) && !misspelledWords.Contains(word))
+                if (!spellChecker.Check(word).Result && !misspelledWords.Contains(word))
                 {
                     misspelledWords.Add(word);
                 }
