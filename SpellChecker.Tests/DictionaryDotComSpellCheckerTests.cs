@@ -23,17 +23,17 @@ namespace SpellChecker.Tests
         [TestMethod]
         public void Check_That_FileAndServe_Is_Misspelled()
         {
-            var checkDictionary = "sentense";
+            var checkDictionary = "fileandServe";
 
-            Assert.IsFalse(spellChecker.Check(checkDictionary), "Dictionary not detecting misspelled words");
+            Assert.IsFalse(spellChecker.Check(checkDictionary).Result, "Dictionary is not detecting correctly spelled words");
         }
 
         [TestMethod]
         public void Check_That_South_Is_Not_Misspelled()
         {
-            var checkDictionary = "sentence";
+            var checkDictionary = "South";
 
-            Assert.IsTrue(spellChecker.Check(checkDictionary), "Dictionary is not detecting correctly spelled words");
+            Assert.IsTrue(spellChecker.Check(checkDictionary).Result, "Dictionary is not detecting correctly spelled words");
         }
 
     }
