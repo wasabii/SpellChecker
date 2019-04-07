@@ -1,5 +1,7 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Collections.Generic;
+
 
 namespace SpellChecker.Console
 {
@@ -52,6 +54,30 @@ namespace SpellChecker.Console
                 new MnemonicSpellCheckerIBeforeE(),
                 new DictionaryDotComSpellChecker(),
             });
+
+            List<string> misspelledWords = new List<string>();
+
+            foreach(var word in sentence.Split(' '))
+            {
+                if (!spellChecker.Check(word) && !misspelledWords.Contains(word))
+                {
+                    misspelledWords.Add(word);
+                }
+            }
+
+            if (misspelledWords.Count < 1)
+            {
+                System.Console.WriteLine("No incorrectly spelled words detetcted");
+                System.Console.WriteLine("Press any key to exit...");
+                System.Console.ReadLine();
+                return;
+            }
+
+            var words = string.Join(" ", misspelledWords);
+
+            System.Console.WriteLine(string.Format("Misspelled words: {0}", words));
+            System.Console.WriteLine("Press any key to exit...");
+            System.Console.ReadLine();
         }
 
     }

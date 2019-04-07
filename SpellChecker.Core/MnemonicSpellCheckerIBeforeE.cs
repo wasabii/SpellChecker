@@ -1,6 +1,6 @@
-﻿using System;
-
+﻿
 using SpellChecker.Contracts;
+using System.Text.RegularExpressions;
 
 namespace SpellChecker.Core
 {
@@ -25,7 +25,8 @@ namespace SpellChecker.Core
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
         public bool Check(string word)
         {
-            throw new NotImplementedException();
+            var pattern = new Regex(@"\b\w*(cie|(?!c)\w(?=ei))\w*\b");
+            return !pattern.IsMatch(word);
         }
 
     }
