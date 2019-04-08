@@ -23,13 +23,19 @@ namespace SpellChecker.Tests
         [TestMethod]
         public void Check_That_FileAndServe_Is_Misspelled()
         {
-            throw new NotImplementedException();
+            var word = "FileAndServe";
+            var checkTask = spellChecker.Check(word);
+
+            Assert.IsFalse(checkTask.Result);
         }
 
         [TestMethod]
         public void Check_That_South_Is_Not_Misspelled()
         {
-            throw new NotImplementedException();
+            var word = "South";
+            var checkTask = spellChecker.Check(word);
+
+            Assert.IsTrue(checkTask.Result);
         }
 
     }
