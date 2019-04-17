@@ -1,5 +1,9 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpellChecker.Console
 {
@@ -37,11 +41,10 @@ namespace SpellChecker.Console
         /// and it will display a distinct list of incorrectly spelled words
         /// </summary>
         /// <param name="args"></param>
-        public static void Main(string[] args)
+        public static async System.Threading.Tasks.Task Main(string[] args)
         {
-            System.Console.Write("Please enter a sentence: ");
+            Print("Please enter a sentence: ");
             var sentence = System.Console.ReadLine();
-
             // first break the sentence up into words, 
             // then iterate through the list of words using the spell checker
             // capturing distinct words that are misspelled
@@ -52,6 +55,96 @@ namespace SpellChecker.Console
                 new MnemonicSpellCheckerIBeforeE(),
                 new DictionaryDotComSpellChecker(),
             });
+            Print("");
+            Print("Checking spelling...Please wait.");
+            Print("");
+            //Make a list of tasks to run through.
+            var tasks = new List<Task<string>>();
+            //distinct & lower so we don't have to look at the same word twice.
+            foreach (string word in sentence.ToLower().Split(' ').Distinct())
+            {
+                tasks.Add(RunCheck(TrimPunctuation(word), spellChecker));
+            }
+            //Get all the words that failed.
+            var badWords = (await Task.WhenAll(tasks).ConfigureAwait(false)).Where(s => !string.IsNullOrEmpty(s)).Distinct().ToList();
+
+
+            Print("");
+            Print("");
+            if(badWords.Count > 0)
+            {
+                //Print out the list.
+                //Let the user know they did BAD.
+                PrintInvalidMessage(badWords);   
+            } else
+            {
+                //Let the user know they did good.
+                PrintSuccessMessage();
+            }
+
+            Print("");
+            Print("Press any key to exit.");
+            System.Console.ReadKey();
+
+        }
+
+        private static void PrintInvalidMessage(List<string> badWords)
+        {
+            Print("===============================================");
+            Print("= Miss Salley Spellings' List of Misspellings =");
+            Print("===============================================");
+            foreach (string word in badWords)
+            {
+                Print(word);
+            }
+        }
+
+        private static void PrintSuccessMessage()
+        {
+            Print("================================================");
+            Print("= Look at you, you're really good at spelling! =");
+            Print("================================================");
+            Print(" ________________________");
+            Print("|.----------------------.|");
+            Print("||                      ||");
+            Print("||       ______         ||");
+            Print("||     .;;;;;;;;.       ||");
+            Print("||    /;;;;;;;;;;;\\     ||");
+            Print("||   /;/`    `-;;;;; . .||");
+            Print("||   |;|__  __  \\;;;|   ||");
+            Print("||.-.|;| e`/e`  |;;;|   ||");
+            Print("||   |;|  |     |;;;|'--||");
+            Print("||   |;|  '-    |;;;|   ||");
+            Print("||   |;;\\ --'  /|;;;|   ||");
+            Print("||   |;;;;;---'\\|;;;|   ||");
+            Print("||   |;;;;|     |;;;|   ||");
+            Print("||   |;;.-'     |;;;|   ||");
+            Print("||'--|/`        |;;;|--.||");
+            Print("||;;;;    .     ;;;;.\\;;||");
+            Print("||;;;;;-.;_    /.-;;;;;;||");
+            Print("||;;;;;;;;;;;;;;;;;;;;;;||");
+            Print("||jgs;;;;;;;;;;;;;;;;;;;||");
+            Print("'------------------------'");
+        }
+
+        /// <summary>
+        /// DRY method
+        /// </summary>
+        /// <param name="msg"></param>
+        private static void Print(string msg)
+        {
+            System.Console.WriteLine(msg);
+        }
+
+        private static async Task<string> RunCheck(string word, ISpellChecker checker)
+        {
+            var isCorrect = await checker.CheckAsync(word);
+            return isCorrect ? "" : word;
+        }
+
+        private static string TrimPunctuation(string word)
+        {
+            return new string(word.Where(c => !char.IsPunctuation(c)).ToArray()).Trim();
         }
 
     }

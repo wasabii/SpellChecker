@@ -23,13 +23,17 @@ namespace SpellChecker.Tests
         [TestMethod]
         public void Check_That_FileAndServe_Is_Misspelled()
         {
-            throw new NotImplementedException();
+            spellChecker = new DictionaryDotComSpellChecker();
+            var asyncTask = spellChecker.CheckAsync("FileAndServe");
+            Assert.IsFalse(asyncTask.Result);
         }
 
         [TestMethod]
         public void Check_That_South_Is_Not_Misspelled()
         {
-            throw new NotImplementedException();
+            spellChecker = new DictionaryDotComSpellChecker();
+            var asyncTask = spellChecker.CheckAsync("South");
+            Assert.IsTrue(asyncTask.Result);
         }
 
     }

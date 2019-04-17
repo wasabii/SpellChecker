@@ -23,13 +23,17 @@ namespace SpellChecker.Tests
         [TestMethod]
         public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly()
         {
-            throw new NotImplementedException();
+            spellChecker = new MnemonicSpellCheckerIBeforeE();
+            var asyncTask = spellChecker.CheckAsync("believe");
+            Assert.IsTrue(asyncTask.Result);
         }
 
         [TestMethod]
         public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly()
         {
-            throw new NotImplementedException();
+            spellChecker = new MnemonicSpellCheckerIBeforeE();
+            var asyncTask = spellChecker.CheckAsync("science");
+            Assert.IsFalse(asyncTask.Result);
         }
 
     }
