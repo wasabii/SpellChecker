@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Text.RegularExpressions;
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
@@ -14,8 +14,7 @@ namespace SpellChecker.Core
     /// Examples: believe, fierce, collie, die, friend, deceive, ceiling, receipt would be evaulated as spelled correctly
     /// heir, protein, science, seeing, their, and veil would be evaluated as spelled incorrectly.
     /// </summary>
-    public class MnemonicSpellCheckerIBeforeE :
-        ISpellChecker
+    public class MnemonicSpellCheckerIBeforeE : ISpellChecker
     {
 
         /// <summary>
@@ -25,7 +24,10 @@ namespace SpellChecker.Core
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
         public bool Check(string word)
         {
-            throw new NotImplementedException();
+            var match = Regex.Match(word, @"[A-Za-z]*(cei|[^c]ie)[A-Za-z]*");
+            if (match.Success)
+                return true;
+            return false;
         }
 
     }

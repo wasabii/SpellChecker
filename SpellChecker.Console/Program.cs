@@ -1,5 +1,7 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace SpellChecker.Console
 {
@@ -31,7 +33,8 @@ namespace SpellChecker.Console
     /// </summary>
     public static class Program
     {
-
+        // Jake Melkonian
+        // 
         /// <summary>
         /// This application is intended to allow a user enter some text (a sentence)
         /// and it will display a distinct list of incorrectly spelled words
@@ -41,10 +44,14 @@ namespace SpellChecker.Console
         {
             System.Console.Write("Please enter a sentence: ");
             var sentence = System.Console.ReadLine();
+            var cleanedString = Regex.Replace(sentence, @"([^a-zA-Z0-9\x20])", string.Empty).ToString();
 
             // first break the sentence up into words, 
             // then iterate through the list of words using the spell checker
             // capturing distinct words that are misspelled
+
+            var splitSentence = cleanedString.Split(' ');
+            var distinctWordsArray = splitSentence.Distinct().ToArray();
 
             // use this spellChecker to evaluate the words
             var spellChecker = new Core.SpellChecker(new ISpellChecker[]
@@ -52,6 +59,13 @@ namespace SpellChecker.Console
                 new MnemonicSpellCheckerIBeforeE(),
                 new DictionaryDotComSpellChecker(),
             });
+            foreach (var word in distinctWordsArray)
+            {
+                if (!spellChecker.Check(word.ToLower()))
+                    System.Console.WriteLine(word);
+            }
+
+            System.Console.Read();
         }
 
     }

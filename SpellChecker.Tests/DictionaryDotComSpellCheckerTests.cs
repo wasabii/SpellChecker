@@ -20,16 +20,18 @@ namespace SpellChecker.Tests
             spellChecker = new DictionaryDotComSpellChecker();
         }
 
+        // Could use Moq here for unit testing with IoC,
+        // but not sure if it's ok to install new references into the solution.
         [TestMethod]
         public void Check_That_FileAndServe_Is_Misspelled()
         {
-            throw new NotImplementedException();
-        }
+            Assert.IsTrue(!spellChecker.Check("FileAndServe"));   
+        }                                                        
 
         [TestMethod]
         public void Check_That_South_Is_Not_Misspelled()
         {
-            throw new NotImplementedException();
+            Assert.IsTrue(spellChecker.Check("South"));
         }
 
     }

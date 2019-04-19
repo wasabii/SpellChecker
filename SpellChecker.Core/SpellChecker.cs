@@ -10,11 +10,12 @@ namespace SpellChecker.Core
     /// several spell checkers that it uses to evaluate whether a word is spelled correctly
     /// or not.
     /// </summary>
-    public class SpellChecker :
-        ISpellChecker
+    public class SpellChecker : ISpellChecker
     {
 
         readonly ISpellChecker[] spellCheckers;
+        readonly ISpellChecker _mnemonicSpellCheckerIBeforeE;
+        readonly ISpellChecker _dictionaryDotComSpellChecker;
 
         /// <summary>
         /// Initializes a new instance.
@@ -22,7 +23,16 @@ namespace SpellChecker.Core
         /// <param name="spellCheckers"></param>
         public SpellChecker(ISpellChecker[] spellCheckers)
         {
-
+            foreach(var spellchecker in spellCheckers)
+            {
+                if(spellchecker is MnemonicSpellCheckerIBeforeE)
+                {
+                    _mnemonicSpellCheckerIBeforeE = spellchecker;
+                } else if(spellchecker is DictionaryDotComSpellChecker)
+                {
+                    _dictionaryDotComSpellChecker = spellchecker;
+                }
+            }
         }
 
         /// <summary>
@@ -33,7 +43,17 @@ namespace SpellChecker.Core
         /// <returns>True if all spell checkers agree that a word is spelled correctly, false otherwise</returns>
         public bool Check(string word)
         {
-            throw new NotImplementedException();
+            if(_mnemonicSpellCheckerIBeforeE != null)
+            {
+                if (!_mnemonicSpellCheckerIBeforeE.Check(word))
+                    return false;
+            }
+            if(_dictionaryDotComSpellChecker != null)
+            {
+                if (!_dictionaryDotComSpellChecker.Check(word))
+                    return false;
+            }
+            return true;
         }
 
     }

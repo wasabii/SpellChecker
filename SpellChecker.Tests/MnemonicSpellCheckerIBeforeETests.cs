@@ -20,16 +20,18 @@ namespace SpellChecker.Tests
             spellChecker = new MnemonicSpellCheckerIBeforeE();
         }
 
+        // Could use Moq here for unit testing with IoC,
+        // but not sure if it's ok to install new references into the solution.
         [TestMethod]
         public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly()
         {
-            throw new NotImplementedException();
+            Assert.IsTrue(spellChecker.Check("believe"));
         }
 
         [TestMethod]
         public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly()
         {
-            throw new NotImplementedException();
+            Assert.IsTrue(!spellChecker.Check("heir"));
         }
 
     }
