@@ -37,11 +37,10 @@ namespace SpellChecker.Core
 #pragma warning restore IDE0059 // Value assigned to symbol is never used
             var checkers = spellCheckers.GetEnumerator();
 
-            do
+            while (checkers.MoveNext() && !containsSpellingErrors)
             {
-                containsSpellingErrors = ((SpellChecker)checkers.Current).Check(word);
+                containsSpellingErrors = ((ISpellChecker)checkers.Current).Check(word);
             }
-            while (checkers.MoveNext() && !containsSpellingErrors);
 
             return containsSpellingErrors;
         }
