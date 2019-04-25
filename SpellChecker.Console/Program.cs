@@ -1,5 +1,9 @@
-﻿using SpellChecker.Contracts;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace SpellChecker.Console
 {
@@ -31,7 +35,6 @@ namespace SpellChecker.Console
     /// </summary>
     public static class Program
     {
-
         /// <summary>
         /// This application is intended to allow a user enter some text (a sentence)
         /// and it will display a distinct list of incorrectly spelled words
@@ -39,19 +42,60 @@ namespace SpellChecker.Console
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
+
             System.Console.Write("Please enter a sentence: ");
             var sentence = System.Console.ReadLine();
 
-            // first break the sentence up into words, 
-            // then iterate through the list of words using the spell checker
-            // capturing distinct words that are misspelled
+            var misspelledWords = new List<string>();
 
-            // use this spellChecker to evaluate the words
+            string[] words = sentence.Split(' ');
+
+            var MnemonicServiceProvider = new ServiceCollection()
+                    .AddScoped<ISpellChecker, MnemonicSpellCheckerIBeforeE>()
+                    .BuildServiceProvider();
+
+            var DictionaryServiceProvider = new ServiceCollection()
+                    .AddScoped<ISpellChecker, DictionaryDotComSpellChecker>()
+                    .BuildServiceProvider();
             var spellChecker = new Core.SpellChecker(new ISpellChecker[]
             {
-                new MnemonicSpellCheckerIBeforeE(),
-                new DictionaryDotComSpellChecker(),
+                MnemonicServiceProvider.GetService<ISpellChecker>(),
+                DictionaryServiceProvider.GetService<ISpellChecker>()
+                //new MnemonicSpellCheckerIBeforeE(),
+                //new DictionaryDotComSpellChecker(),
             });
+
+            foreach (string word in words)
+            {
+                var sb = new StringBuilder();
+                foreach (var c in word.Where(c => char.IsLetter(c)).Select(c => c))
+                {
+                    sb.Append(c);
+                }
+                var strippedWord = sb.ToString();
+
+                System.Console.WriteLine("CHECKING \"{0}\"", strippedWord);
+                if (!spellChecker.Check(strippedWord).Result && !misspelledWords.Contains(strippedWord))
+                {
+                    misspelledWords.Add(strippedWord);
+                }
+            }
+
+            if (misspelledWords.Count == 0)
+            {
+                System.Console.Write("NO SPELLING MISTAKES FOUND.");
+            }
+            else
+            {
+                System.Console.Write("WORDS WITH SPELLING MISTAKES: ");
+                foreach (var misspelledWord in misspelledWords)
+                {
+                    System.Console.Write("{0} ", misspelledWord);
+                }
+            }
+
+            System.Console.ReadLine();
+
         }
 
     }

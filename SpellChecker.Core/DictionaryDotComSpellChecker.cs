@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Net;
+using System.Threading.Tasks;
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
@@ -19,9 +20,23 @@ namespace SpellChecker.Core
         ISpellChecker
     {
 
-        public bool Check(string word)
+        public Task<bool> Check(string word)
         {
-            throw new NotImplementedException();
+            string url = ("http://dictionary.reference.com/browse/" + word).ToLower();
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            try
+            {
+                using (var response = (HttpWebResponse)request.GetResponse())
+                {
+                    int misspellingIndex = request.Address.OriginalString.IndexOf("misspelling?");
+                    return Task.FromResult(misspellingIndex != 32);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Task.FromResult(false);
+            }
         }
 
     }

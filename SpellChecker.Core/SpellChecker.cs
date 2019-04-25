@@ -1,6 +1,5 @@
-﻿using System;
-
-using SpellChecker.Contracts;
+﻿using SpellChecker.Contracts;
+using System.Threading.Tasks;
 
 namespace SpellChecker.Core
 {
@@ -14,7 +13,7 @@ namespace SpellChecker.Core
         ISpellChecker
     {
 
-        readonly ISpellChecker[] spellCheckers;
+        readonly ISpellChecker[] _spellCheckers;
 
         /// <summary>
         /// Initializes a new instance.
@@ -22,7 +21,7 @@ namespace SpellChecker.Core
         /// <param name="spellCheckers"></param>
         public SpellChecker(ISpellChecker[] spellCheckers)
         {
-
+            _spellCheckers = spellCheckers;
         }
 
         /// <summary>
@@ -31,9 +30,16 @@ namespace SpellChecker.Core
         /// </summary>
         /// <param name="word">Word to check</param>
         /// <returns>True if all spell checkers agree that a word is spelled correctly, false otherwise</returns>
-        public bool Check(string word)
+        public Task<bool> Check(string word)
         {
-            throw new NotImplementedException();
+            foreach (var spellChecker in _spellCheckers)
+            {
+                if (!spellChecker.Check(word).Result)
+                {
+                    return Task.FromResult(false);
+                }
+            }
+            return Task.FromResult(true);
         }
 
     }
