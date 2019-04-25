@@ -24,8 +24,10 @@ namespace SpellChecker.Core
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
         public bool Check(string word)
         {
+            var lowerCase = word.ToLower();
             var regex = new Regex("cei|[^c]ie");
-            return regex.Match(word).Success;
+            var match = regex.Match(lowerCase);
+            return match.Success;
         }
 
     }
