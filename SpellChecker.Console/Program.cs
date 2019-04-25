@@ -1,5 +1,8 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace SpellChecker.Console
 {
@@ -52,6 +55,25 @@ namespace SpellChecker.Console
                 new MnemonicSpellCheckerIBeforeE(),
                 new DictionaryDotComSpellChecker(),
             });
+
+            var wordPattern = new Regex("(\\w+)");
+            //checks sentence for anything matching (\\w+) and then grabs the distinct Value(word) for each of the matches
+            var distinctWords = wordPattern.Matches(sentence).Cast<Match>().Select(match => match.Value).Distinct();
+            var mispelledWords = new List<string>();
+
+            foreach(var word in distinctWords)
+            {
+                if (string.IsNullOrWhiteSpace(word))
+                    continue;
+
+                if (!spellChecker.Check(word))
+                {
+                    mispelledWords.Add(word);
+                }
+            }
+
+            System.Console.WriteLine($"Misspelled words: {string.Join(" ", mispelledWords)}");
+            System.Console.ReadKey();
         }
 
     }
