@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿using System.Net.Http;
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
@@ -21,7 +20,11 @@ namespace SpellChecker.Core
 
         public bool Check(string word)
         {
-            throw new NotImplementedException();
+            using (var httpClient = new HttpClient())
+            {
+                var request = httpClient.GetAsync($"http://dictionary.reference.com/browse/{word}");
+                return request.Result.IsSuccessStatusCode;
+            }
         }
 
     }
