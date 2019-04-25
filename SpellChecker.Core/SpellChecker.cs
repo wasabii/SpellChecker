@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
@@ -22,7 +21,7 @@ namespace SpellChecker.Core
         /// <param name="spellCheckers"></param>
         public SpellChecker(ISpellChecker[] spellCheckers)
         {
-
+            this.spellCheckers = spellCheckers;
         }
 
         /// <summary>
@@ -33,7 +32,18 @@ namespace SpellChecker.Core
         /// <returns>True if all spell checkers agree that a word is spelled correctly, false otherwise</returns>
         public bool Check(string word)
         {
-            throw new NotImplementedException();
+#pragma warning disable IDE0059 // Value assigned to symbol is never used
+            var containsSpellingErrors = false;
+#pragma warning restore IDE0059 // Value assigned to symbol is never used
+            var checkers = spellCheckers.GetEnumerator();
+
+            do
+            {
+                containsSpellingErrors = ((SpellChecker)checkers.Current).Check(word);
+            }
+            while (checkers.MoveNext() && !containsSpellingErrors);
+
+            return containsSpellingErrors;
         }
 
     }
