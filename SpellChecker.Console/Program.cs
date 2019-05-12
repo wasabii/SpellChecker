@@ -1,5 +1,9 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Threading.Tasks;
+using System.Diagnostics;
+using System;
+using System.Reflection;
 
 namespace SpellChecker.Console
 {
@@ -37,23 +41,94 @@ namespace SpellChecker.Console
         /// and it will display a distinct list of incorrectly spelled words
         /// </summary>
         /// <param name="args"></param>
-        public static void Main(string[] args)
+        public static  void Main(string[] args)
         {
+            MyProgram().Wait();
+            
+        }
+
+        public  static async Task<string> MyProgram()
+        {           
+
             System.Console.Write("Please enter a sentence: ");
             var sentence = System.Console.ReadLine();
+            string misSpelledMsg="";
+            string[] misSpelledWords= { };
+            int iMisspelledCount=0;
+
+
+            // use this spellChecker to evaluate the words using dependency injection         
+            var MnemonicSpellChecker = new SpellCheckerInstance(new MnemonicSpellCheckerIBeforeE());
+            var DictionaryChecker = new SpellCheckerInstance(new DictionaryDotComSpellChecker());
+
+            var spellChecker = new Core.SpellChecker(new SpellCheckerInstance[]            {
+                MnemonicSpellChecker,
+                DictionaryChecker,
+            });
+     
+           
+            //string separators
+            char[] strSeparators = { ' ', ':', ',', ';' };
+            //splitting string into words
+            string[] strInputWords = sentence.Split(strSeparators);
 
             // first break the sentence up into words, 
             // then iterate through the list of words using the spell checker
             // capturing distinct words that are misspelled
-
-            // use this spellChecker to evaluate the words
-            var spellChecker = new Core.SpellChecker(new ISpellChecker[]
+                       
+            for (int i = 0; i < strInputWords.Length; i++)
             {
-                new MnemonicSpellCheckerIBeforeE(),
-                new DictionaryDotComSpellChecker(),
-            });
-        }
+              
+                if (strInputWords[i] != "")
+                {
+                    if (! await spellChecker.Check(strInputWords[i]))
+                    {
+                      
+                        bool bContain = false;
+                    
+                        for (int icount=0;icount<misSpelledWords.Length;icount++)
+                        {
+                           
+                            if (misSpelledWords[icount].ToLower()==strInputWords[i].ToLower())
+                            {
+                                bContain = true;
+                            }
+                        }
+                    
+                        if (!bContain)
+                        {
+                           
 
+                            if (misSpelledMsg != "")
+                            {
+                                misSpelledMsg += ", ";
+                            }                         
+
+                            misSpelledMsg += strInputWords[i];
+                            Array.Resize<string>(ref misSpelledWords, iMisspelledCount + 1);
+                            misSpelledWords[iMisspelledCount] = strInputWords[i];
+                          
+                            iMisspelledCount++;
+
+             
+                        }
+
+                    }
+                }
+            }
+
+            if(misSpelledMsg!="")
+            {
+                System.Console.WriteLine("Misspelled words: " + misSpelledMsg);
+                
+            }
+            else
+            {
+                System.Console.WriteLine("No misspelled words");
+            }
+            System.Console.ReadLine();
+            return misSpelledMsg;
+        }
     }
 
 }
