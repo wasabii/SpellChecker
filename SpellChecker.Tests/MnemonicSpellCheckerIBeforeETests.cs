@@ -1,7 +1,7 @@
 ﻿using System;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using System.Threading.Tasks;
 using SpellChecker.Contracts;
 using SpellChecker.Core;
 
@@ -21,15 +21,20 @@ namespace SpellChecker.Tests
         }
 
         [TestMethod]
-        public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly()
+        public async Task  Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly()
         {
-            throw new NotImplementedException();
+            string word = "believe";
+            Assert.AreEqual( true,await spellChecker.Check(word));
+
+          //  throw new NotImplementedException();
         }
 
         [TestMethod]
-        public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly()
+        public async Task Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly()
         {
-            throw new NotImplementedException();
+            string word = "Science";
+            Assert.AreNotEqual(true,await spellChecker.Check(word));
+            //throw new NotImplementedException();
         }
 
     }

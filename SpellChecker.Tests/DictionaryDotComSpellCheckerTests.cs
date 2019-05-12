@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Threading.Tasks;
 
 namespace SpellChecker.Tests
 {
@@ -21,15 +22,21 @@ namespace SpellChecker.Tests
         }
 
         [TestMethod]
-        public void Check_That_FileAndServe_Is_Misspelled()
+        public async Task Check_That_FileAndServe_Is_Misspelled()
         {
-            throw new NotImplementedException();
+            string word = "FileAndServe";
+            bool bStatus = await spellChecker.Check(word);
+            Assert.AreEqual(false,bStatus);
+
+            //throw new NotImplementedException();
         }
 
         [TestMethod]
-        public void Check_That_South_Is_Not_Misspelled()
+        public async Task Check_That_South_Is_Not_Misspelled()
         {
-            throw new NotImplementedException();
+            string word = "South";
+            Assert.AreNotEqual(false,await spellChecker.Check(word));
+            //throw new NotImplementedException();
         }
 
     }
