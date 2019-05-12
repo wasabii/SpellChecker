@@ -1,6 +1,7 @@
 ﻿using System;
-
+using System.Reflection;
 using SpellChecker.Contracts;
+using System.Threading.Tasks;
 
 namespace SpellChecker.Core
 {
@@ -13,16 +14,17 @@ namespace SpellChecker.Core
     public class SpellChecker :
         ISpellChecker
     {
+        //dependency injection using a layer for spellchecker 
+        public SpellCheckerInstance[] _SpellCheck;
 
-        readonly ISpellChecker[] spellCheckers;
-
+     
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
         /// <param name="spellCheckers"></param>
-        public SpellChecker(ISpellChecker[] spellCheckers)
+        public SpellChecker(SpellCheckerInstance[] spellCheck)
         {
-
+            _SpellCheck = spellCheck;
         }
 
         /// <summary>
@@ -31,9 +33,25 @@ namespace SpellChecker.Core
         /// </summary>
         /// <param name="word">Word to check</param>
         /// <returns>True if all spell checkers agree that a word is spelled correctly, false otherwise</returns>
-        public bool Check(string word)
+        public async Task<bool> Check(string word)
         {
-            throw new NotImplementedException();
+            bool bValid = true;
+          
+            for (int iCount=0;iCount<_SpellCheck.Length;iCount++)
+            {
+          //  dynamic s=    Activator.CreateInstance(spellCheckers[iCount].GetType());
+                
+                bool bStatus = await _SpellCheck[iCount].Check(word);
+             
+                if (!bStatus)
+                {
+                   
+                    bValid = false;
+                    break;
+                }
+            }
+          
+            return bValid;
         }
 
     }

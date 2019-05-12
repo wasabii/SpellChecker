@@ -1,6 +1,7 @@
 ﻿using System;
 
 using SpellChecker.Contracts;
+using System.Threading.Tasks;
 
 namespace SpellChecker.Core
 {
@@ -23,9 +24,65 @@ namespace SpellChecker.Core
         /// </summary>
         /// <param name="word">The word to be checked</param>
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
-        public bool Check(string word)
+        public Task<bool> Check(string word)
         {
-            throw new NotImplementedException();
+     
+            bool bValid = true;
+            word = word.ToLower();
+            for (int i=0;i<word.Length;i++)
+            {
+                //checking if sequence ie exists
+               if( word[i] =='i' && i+1<word.Length)
+                {
+                    if(word[i+1]=='e')
+                    {
+                        if (i != 0)
+                        {
+                            if (word[i - 1] == 'c')
+                            {
+                                bValid = false;
+                                break;
+                            }
+                            else
+                            {
+                                bValid = true;                             
+                            }
+                        }
+                        else
+                        {
+                            bValid = true;
+                        }
+                    }
+                }
+              
+                //checking if sequence ei exists and preceded by c so true otherwise false
+                if (word[i] == 'e' && i + 1 < word.Length)
+                {
+                   
+                    if (word[i + 1] == 'i')
+                    {
+                      if (i!=0)
+                        {
+                            if (word[i-1]=='c')
+                            {
+                                bValid = true;
+                            }
+                            else
+                            {
+                              
+                                bValid = false;
+                                break;
+                            }
+                        }
+                      else
+                        {
+                            bValid = false;
+                            break;
+                        }
+                    }
+                }
+            }          
+            return Task.FromResult(bValid);            
         }
 
     }
