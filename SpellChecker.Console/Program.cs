@@ -1,4 +1,6 @@
-﻿using SpellChecker.Contracts;
+
+using System.Threading.Tasks;
+using SpellChecker.Contracts;
 using SpellChecker.Core;
 
 namespace SpellChecker.Console
