@@ -25,7 +25,24 @@ namespace SpellChecker.Core
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
         public bool Check(string word)
         {
-            throw new NotImplementedException();
+            // Check if the string ei and ie are in the word
+            // If they are, check each for their valid mneumonic rule
+            // else just let the word pass/(return true) as it will get handled by dictionary spell checker 
+            if (word.Contains("ei"))
+            {
+                if (word.Contains("cei"))
+                {
+                    return true;
+                }
+            }
+            if (word.Contains("ie"))
+            {
+                if (word.Contains("cie"))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
     }
