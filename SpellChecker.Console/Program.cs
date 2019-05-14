@@ -1,7 +1,7 @@
-
-using System.Threading.Tasks;
-using SpellChecker.Contracts;
+﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpellChecker.Console
 {
@@ -39,7 +39,7 @@ namespace SpellChecker.Console
         /// and it will display a distinct list of incorrectly spelled words
         /// </summary>
         /// <param name="args"></param>
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             System.Console.Write("Please enter a sentence: ");
             var sentence = System.Console.ReadLine();
@@ -54,8 +54,21 @@ namespace SpellChecker.Console
                 new MnemonicSpellCheckerIBeforeE(),
                 new DictionaryDotComSpellChecker(),
             });
-        }
 
+            System.Console.Write("Misspelled words: ");
+
+            foreach (var word in sentence?.Split(' ').Select(x => x).Distinct())
+            {
+                if (await spellChecker.Check(new string(word
+                        .Where(x => !char.IsPunctuation(x))
+                        .ToArray())) == false)
+                {
+                    System.Console.Write(word + " ");
+                }
+            }
+
+            System.Console.ReadKey();
+        }
     }
 
 }

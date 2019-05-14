@@ -1,6 +1,5 @@
-﻿using System;
-
-using SpellChecker.Contracts;
+﻿using SpellChecker.Contracts;
+using System.Threading.Tasks;
 
 namespace SpellChecker.Core
 {
@@ -23,9 +22,14 @@ namespace SpellChecker.Core
         /// </summary>
         /// <param name="word">The word to be checked</param>
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
-        public bool Check(string word)
+        public async Task<bool> Check(string word)
         {
-            throw new NotImplementedException();
+            if (word.Contains("ei"))
+                return word.Contains("cei");
+
+            if (word.Contains("ie"))
+                return !word.Contains("cie");
+            return true;
         }
 
     }

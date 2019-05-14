@@ -1,6 +1,8 @@
-﻿using System;
-
-using SpellChecker.Contracts;
+﻿using SpellChecker.Contracts;
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace SpellChecker.Core
 {
@@ -18,10 +20,16 @@ namespace SpellChecker.Core
     public class DictionaryDotComSpellChecker :
         ISpellChecker
     {
-
-        public bool Check(string word)
+        private const string SearchUrlBase = "http://dictionary.reference.com/browse/";
+        public async Task<bool> Check(string word)
         {
-            throw new NotImplementedException();
+            var strUrl = SearchUrlBase + word;
+            var client = new HttpClient
+            {
+                BaseAddress = new Uri(strUrl)
+            };
+            var response = await client.GetAsync(strUrl);
+            return (response.StatusCode == HttpStatusCode.OK) ? true : false;
         }
 
     }
