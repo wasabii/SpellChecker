@@ -1,5 +1,9 @@
-﻿using SpellChecker.Contracts;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System;
+using System.Threading.Tasks;
 
 namespace SpellChecker.Console
 {
@@ -37,8 +41,17 @@ namespace SpellChecker.Console
         /// and it will display a distinct list of incorrectly spelled words
         /// </summary>
         /// <param name="args"></param>
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
+            var serviceProvider = new ServiceCollection()
+                .AddLogging((options) =>
+                {
+                    options.AddConsole();
+                })
+                .AddSingleton<MnemonicSpellCheckerIBeforeE>()
+                .AddTransient<DictionaryDotComSpellChecker>()
+                .BuildServiceProvider();
+
             System.Console.Write("Please enter a sentence: ");
             var sentence = System.Console.ReadLine();
 
@@ -46,12 +59,44 @@ namespace SpellChecker.Console
             // then iterate through the list of words using the spell checker
             // capturing distinct words that are misspelled
 
-            // use this spellChecker to evaluate the words
-            var spellChecker = new Core.SpellChecker(new ISpellChecker[]
+            var words = sentence.Split(' ');
+
+            System.Console.WriteLine("Select spell checker to use. [d]otcom, [m]nemonic, or press any key to use both.");
+
+            var key = System.Console.ReadKey().Key;
+
+            var checkersList = new System.Collections.Generic.List<ISpellChecker>();
+
+            switch (key)
             {
-                new MnemonicSpellCheckerIBeforeE(),
-                new DictionaryDotComSpellChecker(),
-            });
+                case ConsoleKey.D:
+                    checkersList.Add(serviceProvider.GetService<DictionaryDotComSpellChecker>());
+                    break;
+                case ConsoleKey.M:
+                    checkersList.Add(serviceProvider.GetService<MnemonicSpellCheckerIBeforeE>());
+                    break;
+                default:
+                    checkersList.Add(serviceProvider.GetService<MnemonicSpellCheckerIBeforeE>());
+                    checkersList.Add(serviceProvider.GetService<DictionaryDotComSpellChecker>());
+                    break;
+            }
+
+            var spellChecker = new Core.SpellChecker(checkersList.ToArray());
+
+            var misspelledWords = new System.Collections.Generic.List<string>();
+
+            foreach (var word in words)
+            {
+                if (!await spellChecker.Check(word))
+                {
+                    if (!misspelledWords.Contains(word))
+                        misspelledWords.Add(word);
+                }
+            }
+
+            foreach (var misspelledWord in misspelledWords)
+                System.Console.WriteLine(misspelledWord);
+
         }
 
     }

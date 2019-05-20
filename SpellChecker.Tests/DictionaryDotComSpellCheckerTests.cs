@@ -1,5 +1,7 @@
 ﻿using System;
-
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using SpellChecker.Contracts;
@@ -17,19 +19,30 @@ namespace SpellChecker.Tests
         [TestInitialize]
         public void TestFixureSetUp()
         {
-            spellChecker = new DictionaryDotComSpellChecker();
+            var serviceProvider = new ServiceCollection()
+              .AddLogging((options) => {
+                  options.AddConsole();
+              })
+              .AddSingleton<DictionaryDotComSpellChecker>()
+              .BuildServiceProvider();
+
+            spellChecker = serviceProvider.GetService<DictionaryDotComSpellChecker>();
         }
 
         [TestMethod]
-        public void Check_That_FileAndServe_Is_Misspelled()
+        public async Task Check_That_FileAndServe_Is_Misspelled()
         {
-            throw new NotImplementedException();
+            var output = await spellChecker.Check("FileandServe");
+
+            Assert.IsFalse(output);
         }
 
         [TestMethod]
-        public void Check_That_South_Is_Not_Misspelled()
+        public async Task Check_That_South_Is_Not_Misspelled()
         {
-            throw new NotImplementedException();
+            var output = await spellChecker.Check("South");
+
+            Assert.IsTrue(output);
         }
 
     }

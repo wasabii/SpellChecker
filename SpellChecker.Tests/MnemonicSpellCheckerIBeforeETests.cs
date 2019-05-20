@@ -1,5 +1,7 @@
 ﻿using System;
-
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using SpellChecker.Contracts;
@@ -17,19 +19,30 @@ namespace SpellChecker.Tests
         [TestInitialize]
         public void TestFixtureSetUp()
         {
-            spellChecker = new MnemonicSpellCheckerIBeforeE();
+            var serviceProvider = new ServiceCollection()
+              .AddLogging((options) => {
+                  options.AddConsole();
+              })
+              .AddSingleton<MnemonicSpellCheckerIBeforeE>()
+              .BuildServiceProvider();
+
+            spellChecker = serviceProvider.GetService<MnemonicSpellCheckerIBeforeE>();
         }
 
         [TestMethod]
-        public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly()
+        public async Task Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly()
         {
-            throw new NotImplementedException();
+            var output = await spellChecker.Check("believe");
+
+            Assert.IsTrue(output);
         }
 
         [TestMethod]
-        public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly()
+        public async Task Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly()
         {
-            throw new NotImplementedException();
+            var output = await spellChecker.Check("science");
+
+            Assert.IsFalse(output);
         }
 
     }

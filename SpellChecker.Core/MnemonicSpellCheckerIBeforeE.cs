@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
@@ -18,14 +19,32 @@ namespace SpellChecker.Core
         ISpellChecker
     {
 
+        readonly ILogger logger;
+
+        public MnemonicSpellCheckerIBeforeE(ILogger<ISpellChecker> logger) => this.logger = logger;
         /// <summary>
         /// Returns false if the word contains a letter sequence of "ie" when it is immediately preceded by c.
         /// </summary>
         /// <param name="word">The word to be checked</param>
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
-        public bool Check(string word)
+        public Task<bool> Check(string word)
         {
-            throw new NotImplementedException();
+            logger.Log(LogLevel.Information, $"Running Mnemonic spell checking for word: {word}");
+
+            // convert to lowercase
+            word = word.ToLower();
+
+            // check if the word contains "ie" and if not default the ieIndex to a value of -1
+            var ieIndex = word.Contains("ie") ? word.IndexOf("ie") : -1;
+
+            // check if the word contains "c" and if not default the cIndex to a value of -1
+            var cIndex = word.Contains("c") ? word.IndexOf("c") : -1;
+
+            // check if both index are greater than zero, and if they are greater than zero
+            // does "c" comes before "ie"?
+            var result = !((ieIndex > 0 && cIndex > 0) && (ieIndex - cIndex == 1));
+
+            return Task.FromResult(result);
         }
 
     }
