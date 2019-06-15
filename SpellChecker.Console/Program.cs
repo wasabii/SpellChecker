@@ -1,5 +1,8 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SpellChecker.Console
 {
@@ -19,13 +22,13 @@ namespace SpellChecker.Console
     ///    
     /// 2. The concrete implementation of SpellChecker depends on two other implementations of <see cref="ISpellChecker"/>, <see cref="DictionaryDotComSpellChecker"/>
     ///    and MnemonicSpellCheckerIBeforeE.  You will need to implement those classes.  See those classes for details.
-    ///    
+    ///     
     /// 3. There are covering unit tests in the SpellChecker.Tests library that should be implemented as well.
     /// 
     /// For extra credit, consider the following modifications:
     /// 
-    /// 1. Convert to async.
-    /// 2. Implement Dependency Injection (framework of your choice).
+    /// 1. Convert to async. ( done )
+    /// 2. Implement Dependency Injection (framework of your choice). 
     /// 3. Dynamic loading of checking instances.
     /// 
     /// </summary>
@@ -45,6 +48,7 @@ namespace SpellChecker.Console
             // first break the sentence up into words, 
             // then iterate through the list of words using the spell checker
             // capturing distinct words that are misspelled
+            var wordList = sentence.Split(' ');
 
             // use this spellChecker to evaluate the words
             var spellChecker = new Core.SpellChecker(new ISpellChecker[]
@@ -52,7 +56,36 @@ namespace SpellChecker.Console
                 new MnemonicSpellCheckerIBeforeE(),
                 new DictionaryDotComSpellChecker(),
             });
+
+            var misspelledWords = new List<string>();
+
+            foreach(var word in wordList)
+            {
+                var currentWord  = RemovePeriodAtEndOfWord(word); // call our helper method to remove '.'
+
+                if (!spellChecker.Check(currentWord).Result.Equals(true))
+                {
+                    misspelledWords.Add(currentWord);
+                }
+            }
+
+            System.Console.Write("\nMisspelled Words: ");
+
+            foreach (var wrongWord in misspelledWords.Distinct())
+            {
+                System.Console.Write(wrongWord + " ");
+            }
+            System.Console.ReadLine();
         }
+
+
+
+        #region StringHelper
+        private static string RemovePeriodAtEndOfWord(string word)
+        {
+            return ((word.Contains(".")) ? word.Trim('.') : word);
+        }
+        #endregion
 
     }
 

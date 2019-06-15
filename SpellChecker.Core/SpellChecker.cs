@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
@@ -14,7 +15,7 @@ namespace SpellChecker.Core
         ISpellChecker
     {
 
-        readonly ISpellChecker[] spellCheckers;
+        readonly ISpellChecker[] _spellCheckers;
 
         /// <summary>
         /// Initializes a new instance.
@@ -22,7 +23,7 @@ namespace SpellChecker.Core
         /// <param name="spellCheckers"></param>
         public SpellChecker(ISpellChecker[] spellCheckers)
         {
-
+            _spellCheckers = spellCheckers;
         }
 
         /// <summary>
@@ -31,9 +32,20 @@ namespace SpellChecker.Core
         /// </summary>
         /// <param name="word">Word to check</param>
         /// <returns>True if all spell checkers agree that a word is spelled correctly, false otherwise</returns>
-        public bool Check(string word)
+        public async Task<bool> Check(string word)
         {
-            throw new NotImplementedException();
+            var results = new Dictionary<ISpellChecker, bool>();
+            foreach(var spellChecker in _spellCheckers)
+            {
+                var result = await spellChecker.Check(word);
+
+                if (result.Equals(false))
+                {
+                    results.Add(spellChecker, false);
+                    return results.Keys.Equals(false);
+                }
+            }
+            return true;
         }
 
     }
