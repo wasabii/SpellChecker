@@ -1,6 +1,6 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
-
+using System.Collections.Generic;
 namespace SpellChecker.Console
 {
 
@@ -42,9 +42,8 @@ namespace SpellChecker.Console
             System.Console.Write("Please enter a sentence: ");
             var sentence = System.Console.ReadLine();
 
-            // first break the sentence up into words, 
-            // then iterate through the list of words using the spell checker
-            // capturing distinct words that are misspelled
+            string[] wordsArray = sentence.ToLower().Split(' ', '.', ',', '?', '!');
+            List<string> wordsMisspelled = new List<string>();
 
             // use this spellChecker to evaluate the words
             var spellChecker = new Core.SpellChecker(new ISpellChecker[]
@@ -52,6 +51,16 @@ namespace SpellChecker.Console
                 new MnemonicSpellCheckerIBeforeE(),
                 new DictionaryDotComSpellChecker(),
             });
+
+            foreach (string word in wordsArray) {
+                if (!spellChecker.Check(word) && !wordsMisspelled.Contains(word)) {
+                    wordsMisspelled.Add(word);
+                }
+            }
+
+            foreach (string word in wordsMisspelled) {
+                System.Console.WriteLine($"You misspelled: {word}");
+            }
         }
 
     }
