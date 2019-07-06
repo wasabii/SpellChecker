@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,31 +7,49 @@ using SpellChecker.Core;
 
 namespace SpellChecker.Tests
 {
-
     [TestClass]
     public class MnemonicSpellCheckerIBeforeETests
     {
-
-        ISpellChecker spellChecker;
+        private ISpellChecker _spellChecker;
 
         [TestInitialize]
-        public void TestFixtureSetUp()
+        public void Initialize()
         {
-            spellChecker = new MnemonicSpellCheckerIBeforeE();
+            _spellChecker = new MnemonicSpellCheckerIBeforeE();
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            _spellChecker = null;
         }
 
         [TestMethod]
-        public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly()
+        public async Task Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly()
         {
-            throw new NotImplementedException();
+            var isSpelledCorrectly = await _spellChecker.Check("believe");
+            Assert.IsTrue(isSpelledCorrectly);
         }
 
         [TestMethod]
-        public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly()
+        public async Task Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly()
         {
-            throw new NotImplementedException();
+            var isSpelledCorrectly = await _spellChecker.Check("science");
+            Assert.IsFalse(isSpelledCorrectly);
         }
 
+        [TestMethod]
+        public async Task Check_Word_That_Contains_Combination_Is_Spelled_Correctly()
+        {
+            var isSpelledCorrectly = await _spellChecker.Check("biecei");
+            Assert.IsTrue(isSpelledCorrectly);
+        }
+
+        [TestMethod]
+        public async Task Check_Word_That_Contains_Combination_Is_Spelled_Incorrectly()
+        {
+            var isSpelledCorrectly = await _spellChecker.Check("beicie");
+            Assert.IsFalse(isSpelledCorrectly);
+        }
     }
-
 }
