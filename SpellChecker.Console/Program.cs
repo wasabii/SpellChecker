@@ -1,5 +1,9 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Linq;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SpellChecker.Console
 {
@@ -32,26 +36,45 @@ namespace SpellChecker.Console
     public static class Program
     {
 
+        private static char[] allowedCharacters = @"'-`".ToArray();
         /// <summary>
         /// This application is intended to allow a user enter some text (a sentence)
         /// and it will display a distinct list of incorrectly spelled words
         /// </summary>
         /// <param name="args"></param>
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             System.Console.Write("Please enter a sentence: ");
-            var sentence = System.Console.ReadLine();
 
             // first break the sentence up into words, 
             // then iterate through the list of words using the spell checker
             // capturing distinct words that are misspelled
 
+            var sentenceArray = SentenceShredder(System.Console.ReadLine());
             // use this spellChecker to evaluate the words
-            var spellChecker = new Core.SpellChecker(new ISpellChecker[]
+            var spellChecker = new Core.SpellChecker();
+            var misspelledWords = new List<string>();
+            foreach (var word in sentenceArray)
             {
-                new MnemonicSpellCheckerIBeforeE(),
-                new DictionaryDotComSpellChecker(),
-            });
+                if (!await spellChecker.Check(word))
+                    misspelledWords.Add(word);
+            }
+            if (misspelledWords.Any())
+            {
+                System.Console.WriteLine($"You have {misspelledWords.Count} misspelled word{(misspelledWords.Count > 1 ? "s" : string.Empty)}");
+                foreach (var badWord in misspelledWords)
+                {
+                    System.Console.WriteLine($"{badWord}");
+                }
+            }
+            System.Console.Read();
+        }
+        private static List<string> SentenceShredder(string sentence)
+        {
+            return sentence
+                .Where(c => char.IsLetterOrDigit(c) || char.IsWhiteSpace(c) || allowedCharacters.Contains(c)) //ignore punctuation and random characters, include contractions and hyphenated words
+                .Aggregate(new StringBuilder(), (current, next) => current.Append(next), sb => sb.ToString()) //sb for larger buffers
+                .Split(" ", System.StringSplitOptions.RemoveEmptyEntries).Distinct().ToList();
         }
 
     }
