@@ -1,6 +1,9 @@
-﻿using System;
-
+﻿using System.Threading.Tasks;
 using SpellChecker.Contracts;
+using Autofac;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SpellChecker.Core
 {
@@ -15,14 +18,26 @@ namespace SpellChecker.Core
     {
 
         readonly ISpellChecker[] spellCheckers;
+        /// AF container
+        private IContainer Container { get; set; }
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
-        /// <param name="spellCheckers"></param>
-        public SpellChecker(ISpellChecker[] spellCheckers)
+        public SpellChecker()
         {
 
+            //register the IoC components
+            var builder = new ContainerBuilder();
+            var assembly = Assembly.GetExecutingAssembly();
+            builder //get everything that implements ISpellChecker
+                .RegisterAssemblyTypes(assembly)
+                .Except<SpellChecker>() //avoid infinite loop
+                .Where(t => typeof(ISpellChecker).IsAssignableFrom(t))
+                .InstancePerLifetimeScope()
+                .AsImplementedInterfaces();
+            Container = builder.Build();
+            spellCheckers = Container.Resolve<IEnumerable<ISpellChecker>>().ToArray();
         }
 
         /// <summary>
@@ -31,9 +46,13 @@ namespace SpellChecker.Core
         /// </summary>
         /// <param name="word">Word to check</param>
         /// <returns>True if all spell checkers agree that a word is spelled correctly, false otherwise</returns>
-        public bool Check(string word)
+        public async Task<bool> Check(string word)
         {
-            throw new NotImplementedException();
+            var result = false;
+            foreach (var checker in spellCheckers)
+                if (await checker.Check(word))
+                    result = true; //sticky true
+            return result;
         }
 
     }

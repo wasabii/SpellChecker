@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
@@ -23,11 +24,7 @@ namespace SpellChecker.Core
         /// </summary>
         /// <param name="word">The word to be checked</param>
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
-        public bool Check(string word)
-        {
-            throw new NotImplementedException();
-        }
-
+        public Task<bool> Check(string word) => Task.FromResult(Regex.IsMatch(word, "(cei|\bie|(?!c)\\w(?=ie))"));//dark magic
     }
 
 }
