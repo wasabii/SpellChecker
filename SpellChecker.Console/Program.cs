@@ -51,10 +51,10 @@ namespace SpellChecker.Console
             // capturing distinct words that are misspelled
 
             // use this spellChecker to evaluate the words
-            var spellChecker = new Core.SpellChecker(new ISpellChecker[]
+            var spellChecker = new Core.SpellChecker(new string[]
             {
-                new MnemonicSpellCheckerIBeforeE(),
-                new DictionaryDotComSpellChecker(),
+                typeof(MnemonicSpellCheckerIBeforeE).AssemblyQualifiedName,
+                typeof(DictionaryDotComSpellChecker).AssemblyQualifiedName,
             });
 
             
