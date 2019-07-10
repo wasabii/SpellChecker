@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using SpellChecker.Contracts;
@@ -23,13 +23,23 @@ namespace SpellChecker.Tests
         [TestMethod]
         public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly()
         {
-            throw new NotImplementedException();
+            string word = "fierce"; // correctly spelled
+            bool result;
+
+            result = spellChecker.Check(word).Result;
+
+            Assert.AreEqual(true, result);
         }
 
         [TestMethod]
         public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly()
         {
-            throw new NotImplementedException();
+            string word = "decieve"; // incorrectly spelled
+            bool result;
+
+            result = spellChecker.Check(word).Result;
+
+            Assert.AreEqual(false, result);
         }
 
     }

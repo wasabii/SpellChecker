@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Threading.Tasks;
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
@@ -13,16 +13,15 @@ namespace SpellChecker.Core
     public class SpellChecker :
         ISpellChecker
     {
-
-        readonly ISpellChecker[] spellCheckers;
+        readonly string[] spellCheckers;
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
-        /// <param name="spellCheckers"></param>
-        public SpellChecker(ISpellChecker[] spellCheckers)
+        /// <param name="spellCheckers">The asssembly qualified names of the types of spell checkers.</param>
+        public SpellChecker(string[] spellCheckers)
         {
-
+            this.spellCheckers = spellCheckers;
         }
 
         /// <summary>
@@ -31,9 +30,25 @@ namespace SpellChecker.Core
         /// </summary>
         /// <param name="word">Word to check</param>
         /// <returns>True if all spell checkers agree that a word is spelled correctly, false otherwise</returns>
-        public bool Check(string word)
+        public async Task<bool> Check(string word)
         {
-            throw new NotImplementedException();
+            foreach (var spellCheckerType in this.spellCheckers)
+            {
+                var checker = Activator.CreateInstance(Type.GetType(spellCheckerType)) as ISpellChecker;
+                if (checker == null)
+                {
+                    Console.WriteLine($"The {spellCheckerType} checker was not instantiated properly");
+                    continue;
+                }
+
+                bool isCorrect = await checker.Check(word);
+                if (!isCorrect)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
     }

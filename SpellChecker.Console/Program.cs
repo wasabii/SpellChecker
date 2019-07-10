@@ -1,4 +1,8 @@
-﻿using SpellChecker.Contracts;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SpellChecker.Contracts;
 using SpellChecker.Core;
 
 namespace SpellChecker.Console
@@ -47,13 +51,79 @@ namespace SpellChecker.Console
             // capturing distinct words that are misspelled
 
             // use this spellChecker to evaluate the words
-            var spellChecker = new Core.SpellChecker(new ISpellChecker[]
+            var spellChecker = new Core.SpellChecker(new string[]
             {
-                new MnemonicSpellCheckerIBeforeE(),
-                new DictionaryDotComSpellChecker(),
+                typeof(MnemonicSpellCheckerIBeforeE).AssemblyQualifiedName,
+                typeof(DictionaryDotComSpellChecker).AssemblyQualifiedName,
             });
+
+            
+            Task.Run(() => TestSentence(sentence, spellChecker));
+            System.Console.WriteLine("\nSpellcheckers are running...");
+
+            System.Console.ReadKey();
         }
 
-    }
+        #region Added Methods
 
+        /// <summary>
+        /// The asynchronous method to use inside Main.
+        /// </summary>
+        /// <param name="sentence">The sentence to test.</param>
+        /// <param name="spellChecker">The spell checker to use.</param>
+        public static async void TestSentence(string sentence, Core.SpellChecker spellChecker)
+        {
+            var badWords = new StringBuilder("Misspelled words: ");
+            Dictionary<string, int> uniqueWords = GetUniqueWords(sentence);
+
+            foreach (var word in uniqueWords.Keys)
+            {
+                bool isSpelledCorrectly = await spellChecker.Check(word);
+                if (!isSpelledCorrectly)
+                {
+                    badWords.Append($" {word},");
+                }
+            }
+
+            // Remove the last comma if present.
+            if (badWords[badWords.Length - 1] == ',')
+            {
+                badWords.Remove(badWords.Length - 1, 1);
+            }
+
+            System.Console.WriteLine(badWords);
+            System.Console.WriteLine("\n\nPress any key to quit.");
+        }
+
+        /// <summary>
+        /// Get all unique words in the sentence. 
+        /// </summary>
+        /// <param name="sentence">The sentence to parse.</param>
+        /// <returns>Collection of all unique words and how frequent they were.</returns>
+        /// <remarks>
+        /// I decided to go ahead and track which of the words are unique. It's not truly necessary,
+        /// but could be useful for statistics. If memory is really an issue, use a List instead.
+        /// </remarks>
+        public static Dictionary<string, int> GetUniqueWords(string sentence)
+        {
+            var runOnSentence = new string(sentence.Where(c => !char.IsPunctuation(c) && !char.IsSymbol(c)).ToArray());
+            string[] words = runOnSentence.Split(' ');
+            var wordsDic = new Dictionary<string, int>();
+            foreach (var word in words)
+            {
+                if (!wordsDic.ContainsKey(word))
+                {
+                    wordsDic.Add(word, 1);
+                }
+                else
+                {
+                    wordsDic[word]++;
+                }
+            }
+
+            return wordsDic;
+        }
+
+        #endregion
+    }
 }
