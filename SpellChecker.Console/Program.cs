@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using SpellChecker.Contracts;
 using SpellChecker.Core;
 
@@ -53,35 +54,45 @@ namespace SpellChecker.Console
             var spellChecker = new Core.SpellChecker(new ISpellChecker[]
             {
                 new MnemonicSpellCheckerIBeforeE(),
-                //// new DictionaryDotComSpellChecker(),
+                new DictionaryDotComSpellChecker(),
             });
 
-            #region My Code
+            
+            Task.Run(() => TestSentence(sentence, spellChecker));
 
-            var builder = new StringBuilder("Misspelled words: ");
+            System.Console.WriteLine("\nPress any key to quit.");
+            System.Console.ReadKey();
+        }
+
+        #region Added Methods
+
+        /// <summary>
+        /// The asynchronous method to use inside Main.
+        /// </summary>
+        /// <param name="sentence">The sentence to test.</param>
+        /// <param name="spellChecker">The spell checker to use.</param>
+        public static async void TestSentence(string sentence, Core.SpellChecker spellChecker)
+        {
+            var badWords = new StringBuilder("Misspelled words: ");
             Dictionary<string, int> uniqueWords = GetUniqueWords(sentence);
+
             foreach (var word in uniqueWords.Keys)
             {
-                if (!spellChecker.Check(word))
+                bool isSpelledCorrectly = await spellChecker.Check(word);
+                if (!isSpelledCorrectly)
                 {
-                    builder.Append($" {word},");
+                    badWords.Append($" {word},");
                 }
             }
 
             // Remove the last comma if present.
-            if (builder[builder.Length - 1] == ',')
+            if (badWords[badWords.Length - 1] == ',')
             {
-                builder.Remove(builder.Length - 1, 1);
+                badWords.Remove(badWords.Length - 1, 1);
             }
 
-            System.Console.WriteLine(builder);
-            System.Console.WriteLine("\nPress any key to quit.");
-            System.Console.ReadKey();
-
-            #endregion
+            System.Console.WriteLine(badWords);
         }
-
-        #region Added Methods
 
         /// <summary>
         /// Get all unique words in the sentence. 

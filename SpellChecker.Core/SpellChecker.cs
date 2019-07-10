@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Threading.Tasks;
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
@@ -31,11 +31,12 @@ namespace SpellChecker.Core
         /// </summary>
         /// <param name="word">Word to check</param>
         /// <returns>True if all spell checkers agree that a word is spelled correctly, false otherwise</returns>
-        public bool Check(string word)
+        public async Task<bool> Check(string word)
         {
             foreach (var spellChecker in this.spellCheckers)
             {
-                if (!spellChecker.Check(word))
+                bool isCorrect = await spellChecker.Check(word);
+                if (!isCorrect)
                 {
                     return false;
                 }
