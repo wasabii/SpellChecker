@@ -59,8 +59,8 @@ namespace SpellChecker.Console
 
             
             Task.Run(() => TestSentence(sentence, spellChecker));
+            System.Console.WriteLine("\nSpellcheckers are running...");
 
-            System.Console.WriteLine("\nPress any key to quit.");
             System.Console.ReadKey();
         }
 
@@ -92,6 +92,7 @@ namespace SpellChecker.Console
             }
 
             System.Console.WriteLine(badWords);
+            System.Console.WriteLine("\n\nPress any key to quit.");
         }
 
         /// <summary>
