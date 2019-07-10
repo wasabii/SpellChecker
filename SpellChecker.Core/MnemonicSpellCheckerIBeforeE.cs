@@ -25,7 +25,19 @@ namespace SpellChecker.Core
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
         public bool Check(string word)
         {
-            throw new NotImplementedException();
+            string invWord = word.ToLowerInvariant();
+            if (invWord.Contains("cie"))
+            {
+                return false;
+            }
+
+            int index = invWord.IndexOf("ei");
+            if (index > 0 && invWord[index - 1] != 'c')
+            {
+                return false;
+            }
+
+            return true;
         }
 
     }
