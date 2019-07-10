@@ -31,14 +31,9 @@ namespace SpellChecker.Core
         public bool CheckSynchronous(string word)
         {
             string invWord = word.ToLowerInvariant();
-            if (invWord.Contains("cie"))
+            if (invWord.Contains("cie") && invWord != "science")
             {
-                return false;
-            }
-
-            int index = invWord.IndexOf("ei");
-            if (index > 0 && invWord[index - 1] != 'c')
-            {
+                // I couldn't really let "science" go by...
                 return false;
             }
 
