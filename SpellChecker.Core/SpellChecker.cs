@@ -22,7 +22,7 @@ namespace SpellChecker.Core
         /// <param name="spellCheckers"></param>
         public SpellChecker(ISpellChecker[] spellCheckers)
         {
-
+            this.spellCheckers = spellCheckers;
         }
 
         /// <summary>
@@ -33,7 +33,15 @@ namespace SpellChecker.Core
         /// <returns>True if all spell checkers agree that a word is spelled correctly, false otherwise</returns>
         public bool Check(string word)
         {
-            throw new NotImplementedException();
+            foreach (var spellChecker in this.spellCheckers)
+            {
+                if (!spellChecker.Check(word))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
     }
