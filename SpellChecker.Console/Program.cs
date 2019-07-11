@@ -1,4 +1,8 @@
-﻿using SpellChecker.Contracts;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using SpellChecker.Contracts;
 using SpellChecker.Core;
 
 namespace SpellChecker.Console
@@ -40,20 +44,32 @@ namespace SpellChecker.Console
         public static void Main(string[] args)
         {
             System.Console.Write("Please enter a sentence: ");
-            var sentence = System.Console.ReadLine();
-
-            // first break the sentence up into words, 
-            // then iterate through the list of words using the spell checker
-            // capturing distinct words that are misspelled
-
-            // use this spellChecker to evaluate the words
+            var sentence = System.Console.ReadLine() ?? "";
+            var words = sentence.ToLower().Split(new[] { ' ', '.', ',', '!', '?', ';' }, StringSplitOptions.RemoveEmptyEntries);
+            var distinctWords = new HashSet<string>(words).ToList();
+            
             var spellChecker = new Core.SpellChecker(new ISpellChecker[]
             {
                 new MnemonicSpellCheckerIBeforeE(),
                 new DictionaryDotComSpellChecker(),
             });
+
+            var spellChecks = distinctWords.Select(distinctWord => spellChecker.CheckAsync(distinctWord)).ToList();
+            Task.WaitAll(spellChecks.ToArray());
+
+            var distinctMisspelledWords = distinctWords.Where((distinctWord, index) => !spellChecks[index].Result).ToList();
+            if (distinctMisspelledWords.Any())
+            {
+                var misspelledWords = string.Join(" ", distinctMisspelledWords);
+                System.Console.WriteLine($"Misspelled words: {misspelledWords}");
+            }
+            else
+            {
+                System.Console.WriteLine("There were no misspelled words!");
+            }
+
+            System.Console.ReadLine();
         }
 
     }
-
 }

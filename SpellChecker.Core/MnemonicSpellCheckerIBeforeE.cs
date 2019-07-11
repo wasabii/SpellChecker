@@ -1,5 +1,5 @@
-﻿using System;
-
+﻿using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
@@ -17,15 +17,18 @@ namespace SpellChecker.Core
     public class MnemonicSpellCheckerIBeforeE :
         ISpellChecker
     {
-
         /// <summary>
         /// Returns false if the word contains a letter sequence of "ie" when it is immediately preceded by c.
         /// </summary>
         /// <param name="word">The word to be checked</param>
         /// <returns>true when the word is spelled correctly, false otherwise</returns>
-        public bool Check(string word)
+        public async Task<bool> CheckAsync(string word)
         {
-            throw new NotImplementedException();
+            word = word.Trim().ToLower();
+
+            var misspellingRule = new Regex("[^c]ei|cie");
+            var isMisspelled = misspellingRule.Match(word).Success;
+            return !isMisspelled;
         }
 
     }

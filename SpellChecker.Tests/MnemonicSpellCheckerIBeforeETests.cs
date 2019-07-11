@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using SpellChecker.Contracts;
@@ -11,7 +10,6 @@ namespace SpellChecker.Tests
     [TestClass]
     public class MnemonicSpellCheckerIBeforeETests
     {
-
         ISpellChecker spellChecker;
 
         [TestInitialize]
@@ -20,16 +18,30 @@ namespace SpellChecker.Tests
             spellChecker = new MnemonicSpellCheckerIBeforeE();
         }
 
-        [TestMethod]
-        public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly()
+        [DataTestMethod]
+        [DataRow("believe")]
+        [DataRow("fierce")]
+        [DataRow("collie")]
+        [DataRow("die")]
+        [DataRow("friend")]
+        [DataRow("deceive")]
+        [DataRow("ceiling")]
+        [DataRow("receipt")]
+        public async Task Check_Words_That_Follow_I_Before_E_Except_After_C_Are_Not_Misspelled(string word)
         {
-            throw new NotImplementedException();
+            Assert.IsTrue(await spellChecker.CheckAsync(word));
         }
 
-        [TestMethod]
-        public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly()
+        [DataTestMethod]
+        [DataRow("heir")]
+        [DataRow("protein")]
+        [DataRow("science")]
+        [DataRow("seeing")]
+        [DataRow("their")]
+        [DataRow("veil")]
+        public async Task Check_Words_That_Do_Not_Follow_I_Before_E_Except_After_C_Are_Misspelled(string word)
         {
-            throw new NotImplementedException();
+            Assert.IsFalse(await spellChecker.CheckAsync(word));
         }
 
     }
