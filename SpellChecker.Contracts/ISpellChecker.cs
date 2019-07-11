@@ -1,4 +1,6 @@
-﻿namespace SpellChecker.Contracts
+﻿using System.Threading.Tasks;
+
+namespace SpellChecker.Contracts
 {
 
     /// <summary>
@@ -13,7 +15,7 @@
         /// </summary>
         /// <param name="word">The word that needs to be checked</param>
         /// <returns><c>true</c>, if the word is spelled correctly, <c>false</c> otherwise</returns>
-        bool Check(string word);
+        Task<bool> CheckAsync(string word);
     }
 
 }
