@@ -3,6 +3,8 @@ using SpellChecker.Core;
 
 namespace SpellChecker.Console
 {
+    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// The following are the "requirements" for this project:
@@ -45,13 +47,37 @@ namespace SpellChecker.Console
             // first break the sentence up into words, 
             // then iterate through the list of words using the spell checker
             // capturing distinct words that are misspelled
+            if (sentence == null)
+            {
+                return;
+            }
+
+            var distinctListOfWords = sentence.Split(' ').Distinct().ToList();
 
             // use this spellChecker to evaluate the words
-            var spellChecker = new Core.SpellChecker(new ISpellChecker[]
+            var spellChecker = new Core.SpellChecker(
+                new ISpellChecker[]
+                    {
+                        new MnemonicSpellCheckerIBeforeE(), new DictionaryDotComSpellChecker(),
+                    });
+
+            var incorrectlySpelledWords = new List<string>();
+            foreach (var word in distinctListOfWords)
             {
-                new MnemonicSpellCheckerIBeforeE(),
-                new DictionaryDotComSpellChecker(),
-            });
+                if (spellChecker.Check(word) == false)
+                {
+                    incorrectlySpelledWords.Add(word);
+                }
+            }
+
+            if (incorrectlySpelledWords.Any())
+            {
+                System.Console.Write("The following words are misspelled: " + string.Join(", ", incorrectlySpelledWords));
+            }
+            else
+            {
+                System.Console.WriteLine("Congratulations, there were no misspellings!");
+            }
         }
 
     }
