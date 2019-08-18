@@ -4,12 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SpellChecker.Console
 {
     public class SpellCheckerParser
     {
-        public string GetMisspelledWords(string sentence)
+        public async Task<string> GetMisspelledWords(string sentence)
         {
             // Remove punctuation. If we were accepting entire documents
             // instead of single sentences, we might want to use
@@ -33,7 +34,7 @@ namespace SpellChecker.Console
             var misspellings = new List<string>();
             foreach (var word in words)
             {
-                if (!spellChecker.Check(word))
+                if (!(await spellChecker.Check(word)))
                 {
                     misspellings.Add(word);
                 }

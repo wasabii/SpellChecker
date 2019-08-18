@@ -3,6 +3,7 @@ using SpellChecker.Console;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SpellChecker.Tests
 {
@@ -24,18 +25,18 @@ namespace SpellChecker.Tests
         [DataRow("Either receive it or achieve it.", "Either")]
         [DataRow("The heir believes in science.", "heir science")]
 
-        public void Check_Sentence_With_Misspellings_Returns_Misspellings(string sentence, string misspellings)
+        public async Task Check_Sentence_With_Misspellings_Returns_Misspellings(string sentence, string misspellings)
         {
-            Assert.AreEqual(misspellings, parser.GetMisspelledWords(sentence));
+            Assert.AreEqual(misspellings, await parser.GetMisspelledWords(sentence));
         }
 
         [DataTestMethod]
-        [DataRow("Hello Bob!")]
+        [DataRow("Hello, Bob!")]
         [DataRow("The fierce brown fox jumped over the lazy collie.")]
-        [DataRow("We deceived our friend into thinking the ceiling was actually a receipt.")]
-        public void Check_Sentence_Without_Misspellings_Returns_No_Misspellings(string sentence)
+        [DataRow("We deceived our friend into thinking the ceiling was a huge receipt.")]
+        public async Task Check_Sentence_Without_Misspellings_Returns_No_Misspellings(string sentence)
         {
-            Assert.AreEqual("", parser.GetMisspelledWords(sentence));
+            Assert.AreEqual("", await parser.GetMisspelledWords(sentence));
         }
     }
 }

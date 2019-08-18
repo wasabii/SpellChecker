@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using SpellChecker.Contracts;
 
 namespace SpellChecker.Core
@@ -18,10 +20,12 @@ namespace SpellChecker.Core
     public class DictionaryDotComSpellChecker :
         ISpellChecker
     {
+        static readonly HttpClient client = new HttpClient();
 
-        public bool Check(string word)
+        public async Task<bool> Check(string word)
         {
-            var request = WebRequest.CreateHttp($"http://dictionary.reference.com/browse/{word}");
+            var uri = $"http://dictionary.reference.com/browse/{word}";
+            //var request = WebRequest.CreateHttp(uri);
             // Note: this implementation only treats a 404 as a definitive
             // misspelling. If the dictionary.reference.com server has an
             // issue, it could return one of any number of status codes. In
@@ -42,7 +46,8 @@ namespace SpellChecker.Core
             // spell checker services is down.
             try
             {
-                var response = (HttpWebResponse)request.GetResponse();
+                var response = await client.GetAsync(uri);
+                //var response = (HttpWebResponse)request.GetResponse();
                 return response.StatusCode != HttpStatusCode.NotFound;
             }
             catch (System.Net.WebException ex)
