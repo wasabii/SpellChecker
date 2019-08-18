@@ -20,16 +20,31 @@ namespace SpellChecker.Tests
             spellChecker = new MnemonicSpellCheckerIBeforeE();
         }
 
-        [TestMethod]
-        public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly()
+        [DataTestMethod]
+        [DataRow("believe")]
+        [DataRow("Believe")]
+        [DataRow("BELIEVE")]
+        [DataRow("fierce")]
+        [DataRow("collie")]
+        [DataRow("die")]
+        [DataRow("friend")]
+        public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Correctly(string word)
         {
-            throw new NotImplementedException();
+            Assert.IsTrue(spellChecker.Check(word));
         }
 
-        [TestMethod]
-        public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly()
+        [DataTestMethod]
+        [DataRow("recieve")]
+        [DataRow("Recieve")]
+        [DataRow("RECIEVE")]
+        [DataRow("acieve")]
+        [DataRow("cieve")]
+        [DataRow("decieve")]
+        [DataRow("cieling")]
+        [DataRow("reciept")]
+        public void Check_Word_That_Contains_I_Before_E_Is_Spelled_Incorrectly(string word)
         {
-            throw new NotImplementedException();
+            Assert.IsFalse(spellChecker.Check(word));
         }
 
     }
