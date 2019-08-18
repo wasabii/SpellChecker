@@ -1,6 +1,7 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -31,16 +32,18 @@ namespace SpellChecker.Console
 
             var words = cleanedSentence.Split(new string[] { " " }, System.StringSplitOptions.RemoveEmptyEntries);
 
-            var misspellings = new List<string>();
-            foreach (var word in words)
+            var misspellings = new ConcurrentQueue<string>();
+            await Task.WhenAll(words.Select(async word =>
             {
                 if (!(await spellChecker.Check(word)))
                 {
-                    misspellings.Add(word);
+                    misspellings.Enqueue(word);
                 }
-            }
+            }));
 
             return string.Join(" ", misspellings.Distinct());
         }
     }
 }
+
+

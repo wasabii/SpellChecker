@@ -39,14 +39,14 @@ namespace SpellChecker.Tests
             Assert.AreEqual("", await parser.GetMisspelledWords(sentence));
         }
 
-        [TestMethod]
+        //[TestMethod]
         public async Task Bench_Parser()
         {
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             var result = await parser.GetMisspelledWords("Salley sells seashellss by the seashore.  The shells Salley sells are surely by the sea.");
             sw.Stop();
-            System.Console.WriteLine($"Took {sw.ElapsedMilliseconds} milliseconds"); // -- 2821 ms
+            System.Console.WriteLine($"Took {sw.ElapsedMilliseconds} milliseconds"); // -- 1184 ms
         }
     }
 }
