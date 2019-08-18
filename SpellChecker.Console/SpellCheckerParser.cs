@@ -11,6 +11,15 @@ namespace SpellChecker.Console
 {
     public class SpellCheckerParser
     {
+        private class WordTask
+        {
+            public string Word { get; }
+            public WordTask(string word)
+            {
+                Word = word;
+            }
+            public bool Result { get; set; } = true;
+        }
         public async Task<string> GetMisspelledWords(string sentence)
         {
             // Remove punctuation. If we were accepting entire documents
@@ -30,18 +39,19 @@ namespace SpellChecker.Console
                 new DictionaryDotComSpellChecker(),
             });
 
-            var words = cleanedSentence.Split(new string[] { " " }, System.StringSplitOptions.RemoveEmptyEntries);
+            var words = cleanedSentence.Split(new string[] { " " }, System.StringSplitOptions.RemoveEmptyEntries).Distinct();
+            var wordTasks = new List<WordTask>();
 
-            var misspellings = new ConcurrentQueue<string>();
-            await Task.WhenAll(words.Select(async word =>
+            foreach (var word in words)
             {
-                if (!(await spellChecker.Check(word)))
-                {
-                    misspellings.Enqueue(word);
-                }
+                wordTasks.Add(new WordTask(word));
+            }
+            await Task.WhenAll(wordTasks.Select(async word =>
+            {
+                word.Result = (await spellChecker.Check(word.Word));
             }));
 
-            return string.Join(" ", misspellings.Distinct());
+            return string.Join(" ", wordTasks.Where(t => !t.Result).Select(t => t.Word));
         }
     }
 }
