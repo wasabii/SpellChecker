@@ -67,6 +67,7 @@ namespace SpellChecker.Tests
         [DataRow("seeing")]
         [DataRow("their")]
         [DataRow("veil")]
+        [DataRow("either")]
         public void Check_Word_That_Contains_E_Before_I_Is_Spelled_Incorrectly(string word)
         {
             Assert.IsFalse(spellChecker.Check(word));
