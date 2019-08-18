@@ -42,16 +42,16 @@ namespace SpellChecker.Console
             System.Console.Write("Please enter a sentence: ");
             var sentence = System.Console.ReadLine();
 
-            // first break the sentence up into words, 
-            // then iterate through the list of words using the spell checker
-            // capturing distinct words that are misspelled
+            var misspellings = new SpellCheckerParser().GetMisspelledWords(sentence);
 
-            // use this spellChecker to evaluate the words
-            var spellChecker = new Core.SpellChecker(new ISpellChecker[]
+            if (misspellings.Length > 0)
             {
-                new MnemonicSpellCheckerIBeforeE(),
-                new DictionaryDotComSpellChecker(),
-            });
+                System.Console.WriteLine($"Misspelled words: {misspellings}");
+            }
+            else
+            {
+                System.Console.WriteLine("No misspelled words!");
+            }
         }
 
     }

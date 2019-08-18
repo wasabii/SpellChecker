@@ -29,7 +29,7 @@ namespace SpellChecker.Core
             //
             // We assume here that a false positive is worse for UX than the
             // alternative. It depends on how this tool is used, but if I were
-            // trying to submit files to a system, and it didn't let me because
+            // trying to submit docs to a system, and it didn't let me because
             // it falsely identified misspelled words, I'd be really annoyed.
             // In this case I think it's best to give the users the benefit of
             // the doubt.
@@ -37,8 +37,9 @@ namespace SpellChecker.Core
             // But if the business decides they'd rather show false positives,
             // then we'd only return true if the status code is 200.
             //
-            // Another option would be to throw an exception and let the user
-            // know that one of the spell checker services is down.
+            // Another option would be to throw an exception, which we would
+            // handle in Program.Main(), and let the user know that one of the 
+            // spell checker services is down.
             try
             {
                 var response = (HttpWebResponse)request.GetResponse();
