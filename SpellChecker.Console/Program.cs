@@ -1,5 +1,6 @@
 ﻿using SpellChecker.Contracts;
 using SpellChecker.Core;
+using System.Threading.Tasks;
 
 namespace SpellChecker.Console
 {
@@ -37,21 +38,21 @@ namespace SpellChecker.Console
         /// and it will display a distinct list of incorrectly spelled words
         /// </summary>
         /// <param name="args"></param>
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             System.Console.Write("Please enter a sentence: ");
             var sentence = System.Console.ReadLine();
 
-            // first break the sentence up into words, 
-            // then iterate through the list of words using the spell checker
-            // capturing distinct words that are misspelled
+            var misspellings = await (new SpellCheckerParser().GetMisspelledWords(sentence));
 
-            // use this spellChecker to evaluate the words
-            var spellChecker = new Core.SpellChecker(new ISpellChecker[]
+            if (misspellings.Length > 0)
             {
-                new MnemonicSpellCheckerIBeforeE(),
-                new DictionaryDotComSpellChecker(),
-            });
+                System.Console.WriteLine($"Misspelled words: {misspellings}");
+            }
+            else
+            {
+                System.Console.WriteLine("No misspelled words!");
+            }
         }
 
     }
