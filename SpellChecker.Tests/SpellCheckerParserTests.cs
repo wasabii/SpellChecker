@@ -20,7 +20,7 @@ namespace SpellChecker.Tests
 
         [DataTestMethod]
         [DataRow("Salley sells seashellss by the seashore.", "Salley seashellss")]
-        [DataRow("Please enter a sentence: Salley sells seashellss by the seashore.  The shells Salley sells are surely by the sea.", "Salley seashellss")]
+        [DataRow("Salley sells seashellss by the seashore.  The shells Salley sells are surely by the sea.", "Salley seashellss")]
         [DataRow("The shells Salley sells are surely by the sea", "Salley")]
         [DataRow("Either receive it or achieve it.", "Either")]
         [DataRow("The heir believes in science.", "heir science")]
@@ -37,6 +37,16 @@ namespace SpellChecker.Tests
         public async Task Check_Sentence_Without_Misspellings_Returns_No_Misspellings(string sentence)
         {
             Assert.AreEqual("", await parser.GetMisspelledWords(sentence));
+        }
+
+        [TestMethod]
+        public async Task Bench_Parser()
+        {
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            var result = await parser.GetMisspelledWords("Salley sells seashellss by the seashore.  The shells Salley sells are surely by the sea.");
+            sw.Stop();
+            System.Console.WriteLine($"Took {sw.ElapsedMilliseconds} milliseconds"); // -- 2821 ms
         }
     }
 }
