@@ -25,7 +25,6 @@ namespace SpellChecker.Core
         public async Task<bool> Check(string word)
         {
             var uri = $"http://dictionary.reference.com/browse/{word}";
-            //var request = WebRequest.CreateHttp(uri);
             // Note: this implementation only treats a 404 as a definitive
             // misspelling. If the dictionary.reference.com server has an
             // issue, it could return one of any number of status codes. In
@@ -47,7 +46,6 @@ namespace SpellChecker.Core
             try
             {
                 var response = await client.GetAsync(uri);
-                //var response = (HttpWebResponse)request.GetResponse();
                 return response.StatusCode != HttpStatusCode.NotFound;
             }
             catch (System.Net.WebException ex)
